@@ -8,7 +8,7 @@ const Header: React.FC = () => {
       <div className="flex items-center space-x-2">
         <Brain className="w-8 h-8 text-primary" />
         <h1 className="text-2xl font-semibold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-          Deep Thought Sanctuary
+          MindEase
         </h1>
       </div>
     </header>

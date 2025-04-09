@@ -12,7 +12,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
     <div className="w-full max-w-md mx-auto px-4 animate-fade-in">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-3 text-balance bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-          Welcome to Deep Thought Sanctuary
+          Welcome to MindEase
         </h1>
         <p className="text-muted-foreground">
           A safe space to explore your thoughts and feelings
