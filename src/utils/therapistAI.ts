@@ -1,3 +1,4 @@
+
 import type { Message } from "@/hooks/useChatState";
 
 // Deepseek API integration for more sophisticated responses
@@ -124,7 +125,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     ? " " + randomPick(therapeuticPrompts)
     : "";
   
-  return `${acknowledgment} ${therapeuticPrompt} ${followUp}`;
+  return `${acknowledgment}${therapeuticPrompt} ${followUp}`;
 };
 
 // Helper functions from the original code
