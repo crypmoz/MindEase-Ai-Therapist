@@ -84,7 +84,11 @@ export const processResponseText = (text: string | undefined): string => {
   processedText = processedText.replace(/\b(you can|you could) (try to|attempt to)\b/gi, 'you can try to');
   processedText = processedText.replace(/\b(in my opinion|I think|I believe|from my perspective),? (I think|I believe)\b/gi, 'I believe');
   
-  // NEW: Humanize the text by making it less formal and more conversational
+  // Remove preachy phrases
+  processedText = processedText.replace(/\b(you should|you must|you need to|it's important that you|I recommend that you|I suggest that you|you have to)\b/gi, 'you might consider');
+  processedText = processedText.replace(/\b(always|never)\b/gi, 'sometimes');
+  
+  // Humanize text by making it more conversational
   processedText = processedText.replace(/\b(it is)\b/gi, "it's");
   processedText = processedText.replace(/\b(that is)\b/gi, "that's");
   processedText = processedText.replace(/\b(there is)\b/gi, "there's");
@@ -92,13 +96,23 @@ export const processResponseText = (text: string | undefined): string => {
   processedText = processedText.replace(/\b(how is)\b/gi, "how's");
   processedText = processedText.replace(/\b(who is)\b/gi, "who's");
   processedText = processedText.replace(/\b(cannot)\b/gi, "can't");
+  processedText = processedText.replace(/\b(do not)\b/gi, "don't");
+  processedText = processedText.replace(/\b(did not)\b/gi, "didn't");
+  processedText = processedText.replace(/\b(will not)\b/gi, "won't");
+  processedText = processedText.replace(/\b(would not)\b/gi, "wouldn't");
+  processedText = processedText.replace(/\b(could not)\b/gi, "couldn't");
+  processedText = processedText.replace(/\b(should not)\b/gi, "shouldn't");
   
-  // NEW: Add more natural transitions
+  // Replace formal transitions with conversational ones
   processedText = processedText.replace(/\b(furthermore|moreover|in addition)\b/gi, "also");
   processedText = processedText.replace(/\b(consequently|subsequently)\b/gi, "so");
   processedText = processedText.replace(/\b(therefore|thus|hence)\b/gi, "so");
   
-  // NEW: Break up very long sentences for better reading
+  // Remove judgmental or authoritative language
+  processedText = processedText.replace(/\b(clearly|obviously|certainly|undoubtedly|absolutely|definitely)\b/gi, "");
+  processedText = processedText.replace(/\b(the fact is|the truth is|in reality|to be honest|honestly|frankly)\b/gi, "");
+  
+  // Break up very long sentences for better reading
   if (processedText.length > 100) {
     // Find natural breaking points (periods, question marks, exclamation marks)
     processedText = processedText.replace(/([.!?]) ([A-Z][a-z]+) ([a-z]+ [a-z]+ [a-z]+ [a-z]+) ([,.]) /g, "$1 $2 $3$4\n");
@@ -131,7 +145,7 @@ export const processResponseText = (text: string | undefined): string => {
     processedText += '.';
   }
   
-  // NEW: Convert some periods to question marks for more engaging conversation
+  // Convert some periods to question marks for more engaging conversation
   if (!processedText.includes("?") && 
       (processedText.includes("what") || 
        processedText.includes("how") || 
