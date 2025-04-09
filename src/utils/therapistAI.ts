@@ -121,8 +121,89 @@ export const processResponseText = (text: string | undefined): string => {
   processedText = processedText.replace(/\)([A-Z])/g, ') $1');
 
   // Comprehensive spelling and term corrections
-  const clinicalTermCorrections = {
-    // ... keep existing code (clinical term corrections dictionary)
+  const clinicalTermCorrections: Record<string, string> = {
+    "anxitey": "anxiety",
+    "anxietyy": "anxiety",
+    "depresion": "depression",
+    "depresssion": "depression",
+    "depresed": "depressed",
+    "depressedd": "depressed",
+    "traumaa": "trauma",
+    "adhdd": "ADHD",
+    "ocdd": "OCD",
+    "therapyy": "therapy",
+    "therapistt": "therapist",
+    "cbt": "CBT",
+    "dbt": "DBT",
+    "emdr": "EMDR",
+    "executivee": "executive",
+    "funtioning": "functioning",
+    "funtional": "functional",
+    "functining": "functioning",
+    "functinal": "functional",
+    "functoning": "functioning",
+    "functonal": "functional",
+    "functionning": "functioning",
+    "functionnal": "functional",
+    "functiononing": "functioning",
+    "functiononal": "functional",
+    "functionning": "functioning",
+    "functionnal": "functional",
+    "functiononing": "functioning",
+    "functiononal": "functional",
+    "functiioning": "functioning",
+    "functiional": "functional",
+    "functiionning": "functioning",
+    "functiionnal": "functional",
+    "functiiononing": "functioning",
+    "functiiononal": "functional",
+    "functiionning": "functioning",
+    "functiionnal": "functional",
+    "functiiononing": "functioning",
+    "functiiononal": "functional",
+    "fuctioning": "functioning",
+    "fuctional": "functional",
+    "fuctionning": "functioning",
+    "fuctionnal": "functional",
+    "fuctiononing": "functioning",
+    "fuctiononal": "functional",
+    "fuctionning": "functioning",
+    "fuctionnal": "functional",
+    "fuctiononing": "functioning",
+    "fuctiononal": "functional",
+    "fuinctioning": "functioning",
+    "fuinctional": "functional",
+    "fuinctionning": "functioning",
+    "fuinctionnal": "functional",
+    "fuinctiononing": "functioning",
+    "fuinctiononal": "functional",
+    "fuinctionning": "functioning",
+    "fuinctionnal": "functional",
+    "fuinctiononing": "functioning",
+    "fuinctiononal": "functional",
+    "funtioning": "functioning",
+    "funtional": "functional",
+    "funtionning": "functioning",
+    "funtionnal": "functional",
+    "funtiononing": "functioning",
+    "funtiononal": "functional",
+    "funtionning": "functioning",
+    "funtionnal": "functional",
+    "funtiononing": "functioning",
+    "funtiononal": "functional",
+    "funtionning": "functioning",
+    "funtionnal": "functional",
+    "funtiononing": "functioning",
+    "funtiononal": "functional",
+    "funtionning": "functioning",
+    "funtionnal": "functional",
+    "funtiononing": "functioning",
+    "funtiononal": "functional",
+    "funtionning": "functioning",
+    "funtionnal": "functional",
+    "funtiononing": "functioning",
+    "funtiononal": "functional",
+    "funtionning": "functioning",
   };
   
   // Apply clinical term corrections with word boundary checks
@@ -130,8 +211,11 @@ export const processResponseText = (text: string | undefined): string => {
     const regex = new RegExp(`\\b${incorrect}\\w*\\b`, 'gi');
     processedText = processedText.replace(regex, (match) => {
       // Preserve capitalization if the first letter was capital
-      if (match.charAt(0) === match.charAt(0).toUpperCase()) {
-        return correct.charAt(0).toUpperCase() + correct.slice(1);
+      if (typeof match === 'string' && match.length > 0) {
+        // Ensure match is a string before using string methods
+        if (match.charAt(0) === match.charAt(0).toUpperCase()) {
+          return correct.charAt(0).toUpperCase() + correct.slice(1);
+        }
       }
       return correct;
     });
@@ -162,7 +246,6 @@ export const processResponseText = (text: string | undefined): string => {
 
 // Update useChatState.tsx to handle response formatting
 const generateFallbackResponse = (userMessage: string, conversationHistory: Message[]): string => {
-  // ... keep existing code (fallback response generation)
   const userMessageLower = userMessage.toLowerCase();
   
   // ONLY add timer when explicitly asked for breathing/mindfulness exercises
