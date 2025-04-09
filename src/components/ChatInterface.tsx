@@ -7,6 +7,7 @@ import PrivacyMessage from "./PrivacyMessage";
 import ApiKeySetup from "./ApiKeySetup";
 import DataProcessingIndicator from "./DataProcessingIndicator";
 import PrivacyFAQ from "./PrivacyFAQ";
+import ModelSelectionBanner from "./ModelSelectionBanner";
 import { useChatState } from "@/hooks/useChatState";
 
 const ChatInterface: React.FC = () => {
@@ -31,10 +32,10 @@ const ChatInterface: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto">
+      <ModelSelectionBanner onApiKeySet={() => setApiKeySet(true)} />
+      
       <div className="flex-1 overflow-y-auto p-4 scrollbar-none">
         <PrivacyMessage onFAQClick={() => setShowPrivacyFAQ(true)} />
-        
-        <ApiKeySetup onApiKeySet={() => setApiKeySet(true)} />
         
         <div className="space-y-1 pb-4">
           {messages.map((msg, index) => (

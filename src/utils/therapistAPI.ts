@@ -5,6 +5,9 @@ import { generateFallbackResponse } from './fallbackResponses';
 // Default API key
 let apiKey = "sk-1adb53a9c7a64b068a032b706f9f2cf2";
 
+// Default model
+let currentModel = "deepseek-chat";
+
 // Function to set API key
 export const setApiKey = (key: string) => {
   apiKey = key;
@@ -15,7 +18,46 @@ export const hasApiKey = () => {
   return !!apiKey;
 };
 
-// Call the Deepseek API to get a response
+// Function to set model
+export const setModel = (model: string) => {
+  currentModel = model;
+  localStorage.setItem('mindease-model', model);
+};
+
+// Function to get current model
+export const getModel = () => {
+  const savedModel = localStorage.getItem('mindease-model');
+  if (savedModel) {
+    currentModel = savedModel;
+  }
+  return currentModel;
+};
+
+// Model configuration mapping
+const MODEL_CONFIG = {
+  "deepseek-chat": {
+    endpoint: "https://api.deepseek.com/v1/chat/completions",
+    model: "deepseek-chat",
+    temperature: 0.7
+  },
+  "deepseek-coder": {
+    endpoint: "https://api.deepseek.com/v1/chat/completions",
+    model: "deepseek-coder",
+    temperature: 0.6
+  },
+  "deepseek-lite": {
+    endpoint: "https://api.deepseek.com/v1/chat/completions",
+    model: "deepseek-lite",
+    temperature: 0.7
+  },
+  "custom": {
+    endpoint: "https://api.deepseek.com/v1/chat/completions",
+    model: "deepseek-chat",
+    temperature: 0.7
+  }
+};
+
+// Call the API to get a response
 export const callDeepseekAPI = async (
   formattedMessages: any[],
   fallbackCallback: () => string
@@ -27,17 +69,20 @@ export const callDeepseekAPI = async (
       return fallbackCallback();
     }
 
-    // Call the Deepseek API
-    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+    // Get model configuration
+    const modelConfig = MODEL_CONFIG[currentModel as keyof typeof MODEL_CONFIG] || MODEL_CONFIG["deepseek-chat"];
+
+    // Call the API
+    const response = await fetch(modelConfig.endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: modelConfig.model,
         messages: formattedMessages,
-        temperature: 0.7,
+        temperature: modelConfig.temperature,
         max_tokens: 250
       })
     });
@@ -52,7 +97,7 @@ export const callDeepseekAPI = async (
     // Get the response text and return directly - formatting will be handled by the caller
     return data.choices[0].message.content;
   } catch (error) {
-    console.error("Error calling Deepseek API:", error);
+    console.error("Error calling API:", error);
     return fallbackCallback();
   }
 };

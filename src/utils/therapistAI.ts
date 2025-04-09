@@ -2,7 +2,14 @@
 import type { Message } from "@/hooks/useChatState";
 import { processResponseText } from './textProcessing';
 import { generateFallbackResponse } from './fallbackResponses';
-import { callDeepseekAPI, formatConversationForAPI, setApiKey, hasApiKey } from './therapistAPI';
+import { 
+  callDeepseekAPI, 
+  formatConversationForAPI, 
+  setApiKey, 
+  hasApiKey,
+  setModel,
+  getModel
+} from './therapistAPI';
 
 // Main function to generate therapist response
 export const generateTherapistResponse = async (
@@ -27,4 +34,10 @@ export const generateTherapistResponse = async (
 };
 
 // Re-export necessary functions
-export { processResponseText, setApiKey, hasApiKey };
+export { 
+  processResponseText, 
+  setApiKey, 
+  hasApiKey,
+  setModel,
+  getModel
+};
