@@ -1,6 +1,6 @@
 import type { Message } from "@/hooks/useChatState";
 
-// OpenAI API integration for more sophisticated responses
+// Deepseek API integration for more sophisticated responses
 export const generateTherapistResponse = async (
   userMessage: string,
   conversationHistory: Message[]
@@ -25,22 +25,21 @@ export const generateTherapistResponse = async (
       }
     ];
 
-    // This is a fallback mechanism if the API call fails or isn't configured
-    // In a production environment, this would be removed
+    // This is a fallback mechanism if the API call fails
     if (!apiKey) {
       console.log("Using fallback response mechanism - no API key configured");
       return generateFallbackResponse(userMessage, conversationHistory);
     }
 
-    // Call the OpenAI API
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    // Call the Deepseek API
+    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "deepseek-chat",
         messages: formattedMessages,
         temperature: 0.7,
         max_tokens: 250
@@ -173,9 +172,8 @@ const therapeuticPrompts = [
   "How might your future self look back on this moment?",
 ];
 
-// In a real application, this would be set through environment variables
-// For now, we'll set it to empty and provide a way for users to enter it
-let apiKey = "";
+// Set default API key to the provided one
+let apiKey = "sk-1adb53a9c7a64b068a032b706f9f2cf2";
 
 // Function to set API key
 export const setApiKey = (key: string) => {
