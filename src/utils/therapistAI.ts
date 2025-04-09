@@ -14,7 +14,7 @@ export const generateTherapistResponse = async (
     const formattedMessages = [
       {
         role: "system",
-        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere. ALWAYS ensure proper spacing between words and sentences. DO NOT add any random characters at the beginning of your responses. For breathing or mindfulness exercises, include [timer] at the start of your message to display a progress indicator."
+        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere. ALWAYS ensure proper spacing between words and sentences. DO NOT add any random characters at the beginning of your responses. For breathing or mindfulness exercises, include [timer:duration] at the start of your message, where duration is the number of seconds (e.g., [timer:120] for a 2-minute exercise). This will display a countdown timer for the user."
       },
       ...recentMessages.map(msg => ({
         role: msg.isUser ? "user" : "assistant",
@@ -87,7 +87,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     userMessageLower.includes("meditation") ||
     userMessageLower.includes("mindful")
   ) {
-    return "[timer] Let's take a moment to breathe together. Inhale slowly through your nose for a count of four. Hold for a moment. Then exhale gently through your mouth for a count of six. How do you feel after trying this simple breathing exercise?";
+    return "[timer:120] Let's take a moment to breathe together. Inhale slowly through your nose for a count of four. Hold for a moment. Then exhale gently through your mouth for a count of six. Continue this cycle for the next two minutes. How do you feel after trying this breathing exercise?";
   }
   
   // Detect greetings

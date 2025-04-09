@@ -17,6 +17,8 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
   const [isTyping, setIsTyping] = useState(true);
   const [progressValue, setProgressValue] = useState(0);
   const [showTimer, setShowTimer] = useState(false);
+  const [timerDuration, setTimerDuration] = useState(60); // Default 60 seconds
+  const [timeRemaining, setTimeRemaining] = useState(60);
   
   useEffect(() => {
     if (!content) return;
@@ -24,31 +26,68 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     setIsTyping(true);
     setDisplayedText("");
     
-    // Determine if we should show a timer based on content
-    const shouldShowTimer = content.includes("[timer]");
+    // Check for timer tag with optional duration [timer:duration]
+    const timerMatch = content.match(/\[timer(?::(\d+))?\]/);
+    const shouldShowTimer = timerMatch !== null;
     setShowTimer(shouldShowTimer);
     
+    // Extract duration if specified, default to 60 seconds otherwise
+    if (shouldShowTimer && timerMatch && timerMatch[1]) {
+      const duration = parseInt(timerMatch[1], 10);
+      setTimerDuration(duration);
+      setTimeRemaining(duration);
+    } else if (shouldShowTimer) {
+      setTimerDuration(60);
+      setTimeRemaining(60);
+    }
+    
     // Clean the content of any timer tags
-    const cleanContent = content.replace("[timer]", "").trim();
+    const cleanContent = content.replace(/\[timer(?::(\d+))?\]/, "").trim();
     
     let currentIndex = 0;
     const totalLength = cleanContent.length;
     
-    const timer = setInterval(() => {
+    const typingTimer = setInterval(() => {
       if (currentIndex < totalLength) {
         setDisplayedText(prevText => prevText + cleanContent[currentIndex]);
         // Update progress for visual feedback
         setProgressValue((currentIndex / totalLength) * 100);
         currentIndex++;
       } else {
-        clearInterval(timer);
+        clearInterval(typingTimer);
         setIsTyping(false);
         setProgressValue(100);
       }
     }, typingDelay);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(typingTimer);
   }, [content, typingDelay]);
+
+  // Start countdown timer when typing is complete and timer is shown
+  useEffect(() => {
+    if (!isTyping && showTimer && timeRemaining > 0) {
+      const countdownTimer = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownTimer);
+            return 0;
+          }
+          return prev - 1;
+        });
+        // Update progress based on time remaining
+        setProgressValue((1 - timeRemaining / timerDuration) * 100);
+      }, 1000);
+      
+      return () => clearInterval(countdownTimer);
+    }
+  }, [isTyping, showTimer, timeRemaining, timerDuration]);
+
+  // Format time remaining as MM:SS
+  const formatTimeRemaining = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   // Show typing indicator when no content is available
   if (!content) {
@@ -72,9 +111,16 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
       {/* Timer visualization */}
       {showTimer && (
         <div className="mt-3 space-y-2">
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-primary" />
-            <span className="text-xs text-muted-foreground">Take a moment...</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-primary" />
+              <span className="text-xs text-muted-foreground">
+                {timeRemaining > 0 ? "Time remaining:" : "Time's up!"}
+              </span>
+            </div>
+            <span className="text-sm font-medium">
+              {formatTimeRemaining(timeRemaining)}
+            </span>
           </div>
           <Progress value={progressValue} className="h-1.5" />
         </div>
