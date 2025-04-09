@@ -83,22 +83,34 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // Format displayed text to render paragraphs properly
+  // Format displayed text to render paragraphs properly - completely rewritten
   const formatDisplayText = (text: string) => {
+    // Safety check for empty text
+    if (!text) return null;
+    
     // Split by double line breaks to identify paragraphs
-    return text.split('\n\n').map((paragraph, i) => (
-      <p key={i} className="mb-3 last:mb-0">
-        {paragraph.split('\n').map((line, j) => {
-          // Properly return fragment with only valid props: key and children
-          return (
-            <React.Fragment key={j}>
-              {line}
-              {j < paragraph.split('\n').length - 1 && <br />}
-            </React.Fragment>
-          );
-        })}
-      </p>
-    ));
+    const paragraphs = text.split('\n\n');
+    
+    return paragraphs.map((paragraph, pIndex) => {
+      const lines = paragraph.split('\n');
+      
+      // Create paragraph elements with line breaks
+      return (
+        <p key={`p-${pIndex}`} className="mb-3 last:mb-0">
+          {lines.map((line, lIndex) => {
+            // For the last line in a paragraph, don't add a <br />
+            const isLastLine = lIndex === lines.length - 1;
+            
+            return (
+              <React.Fragment key={`line-${pIndex}-${lIndex}`}>
+                {line}
+                {!isLastLine && <br />}
+              </React.Fragment>
+            );
+          })}
+        </p>
+      );
+    });
   };
 
   // Show typing indicator when no content is available
