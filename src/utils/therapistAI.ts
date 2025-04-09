@@ -54,16 +54,44 @@ export const generateTherapistResponse = async (
     }
 
     const data = await response.json();
-    // Ensure the response doesn't have undefined at the end or any leading/trailing whitespace
+    // Process the response text to fix formatting issues
     let responseText = data.choices[0].message.content;
     
     // Clean up the response text to remove any unintended formatting issues
     if (responseText) {
+      // Trim whitespace
       responseText = responseText.trim();
       
-      // Check for and fix common formatting issues
-      responseText = responseText.replace(/\s{2,}/g, ' '); // Remove double spaces
-      responseText = responseText.replace(/^[a-zA-Z](?=\w)/, match => ' ' + match); // Fix joinedFirstLetters
+      // Remove any random characters at the beginning
+      responseText = responseText.replace(/^[^a-zA-Z0-9\[]/, '').trim();
+      
+      // Fix multiple consecutive spaces
+      responseText = responseText.replace(/\s{2,}/g, ' ');
+      
+      // Fix common formatting issues where words are joined
+      responseText = responseText.replace(/([a-z])([A-Z])/g, '$1 $2');
+      
+      // Fix missing spaces after punctuation
+      responseText = responseText.replace(/([.!?])([a-zA-Z])/g, '$1 $2');
+      
+      // Fix spelling mistakes for common therapy terms
+      const commonSpellingCorrections = {
+        'anxiet': 'anxiety',
+        'depresion': 'depression',
+        'mindfullness': 'mindfulness',
+        'medittation': 'meditation',
+        'breath': 'breathe',
+        'concious': 'conscious',
+        'unconcious': 'unconscious',
+        'relaxtion': 'relaxation',
+        'theraputic': 'therapeutic'
+      };
+      
+      // Apply spelling corrections
+      Object.entries(commonSpellingCorrections).forEach(([misspelled, correct]) => {
+        const regex = new RegExp(`\\b${misspelled}\\w*\\b`, 'gi');
+        responseText = responseText.replace(regex, correct);
+      });
     }
     
     return responseText || "I'm here to listen. What's on your mind?";
@@ -73,7 +101,7 @@ export const generateTherapistResponse = async (
   }
 };
 
-// Fallback mechanism using the original local response generator
+// Update useChatState.tsx to handle response formatting
 const generateFallbackResponse = (userMessage: string, conversationHistory: Message[]): string => {
   const userMessageLower = userMessage.toLowerCase();
   

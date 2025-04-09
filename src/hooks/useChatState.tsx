@@ -33,11 +33,21 @@ export const useChatState = () => {
     setTimeout(() => {
       generateTherapistResponse(cleanText, messages)
         .then(response => {
-          // Make sure response is not undefined and properly spaced
+          // Make sure response is not undefined and properly formatted
           const cleanResponse = response ? response.trim() : 
             "I'm here to listen. What would you like to talk about?";
           
-          setMessages(prev => [...prev, { text: cleanResponse, isUser: false }]);
+          // Additional checks for common formatting issues
+          const finalResponse = cleanResponse
+            // Remove any random characters at the beginning that might have slipped through
+            .replace(/^[^a-zA-Z0-9\[]/, '')
+            // Ensure proper spacing after punctuation
+            .replace(/([.!?])([a-zA-Z])/g, '$1 $2')
+            // Fix multiple consecutive spaces
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+          
+          setMessages(prev => [...prev, { text: finalResponse, isUser: false }]);
           setIsTherapistTyping(false);
         })
         .catch(error => {
