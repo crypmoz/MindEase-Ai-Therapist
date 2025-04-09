@@ -100,16 +100,42 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     return "Anxiety can feel overwhelming, both in your mind and body. Your nervous system is trying to protect you, but it might be working overtime. When do you notice these feelings coming up?";
   }
   
+  // NEW: Improved response for depression-related queries
+  if (
+    userMessageLower.includes("depress") ||
+    userMessageLower.includes("sad") ||
+    userMessageLower.includes("hopeless") ||
+    userMessageLower.includes("worthless") ||
+    userMessageLower.includes("empty")
+  ) {
+    return "Those feelings of heaviness and emptiness can be so difficult to carry. You're not alone in this experience, and it's not a reflection of your worth or strength. What has your emotional landscape been like lately?";
+  }
+  
+  // NEW: Improved response for relationship issues
+  if (
+    userMessageLower.includes("relationship") ||
+    userMessageLower.includes("partner") ||
+    userMessageLower.includes("boyfriend") ||
+    userMessageLower.includes("girlfriend") ||
+    userMessageLower.includes("husband") ||
+    userMessageLower.includes("wife") ||
+    userMessageLower.includes("marriage") ||
+    userMessageLower.includes("dating")
+  ) {
+    return "Relationships can bring both our deepest joys and challenges. The dynamics between people often touch on our core needs and vulnerabilities. What's been happening in your relationship that's on your mind?";
+  }
+  
   // General response for most messages
   // Combine an acknowledgment with a follow-up question
   const acknowledgment = randomPick(acknowledgments);
-  const followUp = randomPick(followUpQuestions);
   
   // Occasionally add a therapeutic prompt (30% chance)
   const includeTherapeuticPrompt = Math.random() < 0.3;
   const therapeuticPrompt = includeTherapeuticPrompt 
     ? " " + randomPick(therapeuticPrompts)
     : "";
+  
+  const followUp = randomPick(followUpQuestions);
   
   return `${acknowledgment}${therapeuticPrompt} ${followUp}`;
 };

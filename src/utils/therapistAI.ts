@@ -26,7 +26,10 @@ export const generateTherapistResponse = async (
       () => generateFallbackResponse(userMessage, conversationHistory)
     );
     
-    return responseText;
+    // Process the response text to improve formatting and readability
+    const processedResponse = processResponseText(responseText);
+    
+    return processedResponse;
   } catch (error) {
     console.error("Error generating AI response:", error);
     return generateFallbackResponse(userMessage, conversationHistory);
