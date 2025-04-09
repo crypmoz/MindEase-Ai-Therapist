@@ -18,7 +18,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("countdown");
   
   if (needsBreathingExercise) {
-    return "[timer:120] Let's try a simple breathing exercise. Breathe in slowly through your nose for 4 counts, then exhale gently through your mouth for 6 counts. Continue this pattern for the next two minutes, focusing on your breath.";
+    return "[timer:120] Let's try a simple breathing exercise together. Breathe in slowly through your nose for 4 counts. Hold for a moment. Then exhale gently through your mouth for 6 counts. This helps calm your nervous system. Continue this pattern for the next two minutes, focusing on your breath.";
   }
   
   // Detect greetings
@@ -28,7 +28,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
      userMessageLower.includes("hi") ||
      userMessageLower.includes("hey"))
   ) {
-    return "Hi there! What's on your mind today?";
+    return "Hi there! It's good to meet you. This is a safe space where you can share whatever's on your mind. What would you like to talk about today?";
   }
   
   // Detect if user is asking how the AI works
@@ -47,7 +47,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("thanks") ||
     userMessageLower.includes("helpful")
   ) {
-    return "You're welcome. Is there something specific you'd like to talk about next?";
+    return "You're welcome. Taking time to reflect on your feelings shows real self-awareness. Is there something specific that resonated with you?";
   }
   
   // Detect if user is asking about privacy
@@ -67,17 +67,17 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("see you") ||
     userMessageLower.includes("that's all")
   ) {
-    return "Thanks for talking today. Take care.";
+    return "Thank you for sharing with me today. Take a moment to acknowledge any insights you've gained. Remember to be gentle with yourself as you move forward.";
   }
   
-  // Topic-specific responses with less preachy tone
+  // Enhanced responses for trauma, ADHD, and anxiety
   if (
     userMessageLower.includes("trauma") ||
     userMessageLower.includes("ptsd") ||
     userMessageLower.includes("abuse") ||
     userMessageLower.includes("neglect")
   ) {
-    return "Those experiences can have a real impact. How have you been coping with this lately?";
+    return "Our minds and bodies find ways to protect us from difficult experiences. These responses make sense, even if they're challenging now. Would you like to share more about how these experiences are affecting you?";
   }
   
   if (
@@ -87,7 +87,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("executive") ||
     userMessageLower.includes("procrastinate")
   ) {
-    return "Focus and attention challenges can be really frustrating. What specific difficulties have you been experiencing?";
+    return "Focus and attention challenges can be really frustrating. These aren't character flaws but reflect differences in how your brain processes information. What specific difficulties are you experiencing?";
   }
   
   if (
@@ -97,10 +97,10 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("panic") ||
     userMessageLower.includes("stress")
   ) {
-    return "Anxiety can feel overwhelming. When do you notice these feelings coming up?";
+    return "Anxiety can feel overwhelming, both in your mind and body. Your nervous system is trying to protect you, but it might be working overtime. When do you notice these feelings coming up?";
   }
   
-  // Response for depression-related queries
+  // NEW: Improved response for depression-related queries
   if (
     userMessageLower.includes("depress") ||
     userMessageLower.includes("sad") ||
@@ -108,10 +108,10 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("worthless") ||
     userMessageLower.includes("empty")
   ) {
-    return "Those feelings can be really heavy to carry. What has your mood been like lately?";
+    return "Those feelings of heaviness and emptiness can be so difficult to carry. You're not alone in this experience, and it's not a reflection of your worth or strength. What has your emotional landscape been like lately?";
   }
   
-  // Response for relationship issues
+  // NEW: Improved response for relationship issues
   if (
     userMessageLower.includes("relationship") ||
     userMessageLower.includes("partner") ||
@@ -122,15 +122,15 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("marriage") ||
     userMessageLower.includes("dating")
   ) {
-    return "Relationships can bring up a lot of feelings. What's been happening that's on your mind?";
+    return "Relationships can bring both our deepest joys and challenges. The dynamics between people often touch on our core needs and vulnerabilities. What's been happening in your relationship that's on your mind?";
   }
   
   // General response for most messages
   // Combine an acknowledgment with a follow-up question
   const acknowledgment = randomPick(acknowledgments);
   
-  // Occasionally add a therapeutic prompt (20% chance) - reduced from 30%
-  const includeTherapeuticPrompt = Math.random() < 0.2;
+  // Occasionally add a therapeutic prompt (30% chance)
+  const includeTherapeuticPrompt = Math.random() < 0.3;
   const therapeuticPrompt = includeTherapeuticPrompt 
     ? " " + randomPick(therapeuticPrompts)
     : "";
