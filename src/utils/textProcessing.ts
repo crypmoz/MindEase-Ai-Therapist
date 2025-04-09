@@ -10,11 +10,11 @@ export const processResponseText = (text: string | undefined): string => {
   // Start with basic cleaning
   let processedText = text.trim();
   
-  // Remove any random characters at the beginning
-  processedText = processedText.replace(/^[^a-zA-Z0-9\[]/, '').trim();
+  // Remove any random characters at the beginning more aggressively
+  processedText = processedText.replace(/^[^\w\[]*/, '').trim();
   
-  // Clean up undefined strings at the end
-  processedText = processedText.replace(/undefined\s*$/, '').trim();
+  // Clean up undefined strings at the end (more aggressively)
+  processedText = processedText.replace(/undefined[\s\S]*$/, '').trim();
   
   // Preserve paragraph breaks (double line breaks)
   processedText = processedText.replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
