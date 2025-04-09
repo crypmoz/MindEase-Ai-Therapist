@@ -50,7 +50,6 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     const typingTimer = setInterval(() => {
       if (currentIndex < totalLength) {
         setDisplayedText(prevText => prevText + cleanContent[currentIndex]);
-        // Update progress for visual feedback
         setProgressValue((currentIndex / totalLength) * 100);
         currentIndex++;
       } else {
@@ -63,7 +62,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     return () => clearInterval(typingTimer);
   }, [content, typingDelay]);
 
-  // Start countdown timer when typing is complete and timer is shown
+  // Timer countdown only starts when typing is complete and timer is requested
   useEffect(() => {
     if (!isTyping && showTimer && timeRemaining > 0) {
       const countdownTimer = setInterval(() => {
@@ -74,13 +73,11 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
           }
           return prev - 1;
         });
-        // Update progress based on time remaining
-        setProgressValue((1 - timeRemaining / timerDuration) * 100);
       }, 1000);
       
       return () => clearInterval(countdownTimer);
     }
-  }, [isTyping, showTimer, timeRemaining, timerDuration]);
+  }, [isTyping, showTimer, timeRemaining]);
 
   // Format time remaining as MM:SS
   const formatTimeRemaining = (seconds: number) => {
@@ -108,7 +105,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     <>
       <p className="text-sm sm:text-base whitespace-pre-wrap">{displayedText}</p>
       
-      {/* Timer visualization */}
+      {/* Timer visualization - only shown when timer tag is present */}
       {showTimer && (
         <div className="mt-3 space-y-2">
           <div className="flex items-center justify-between">
@@ -122,7 +119,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
               {formatTimeRemaining(timeRemaining)}
             </span>
           </div>
-          <Progress value={progressValue} className="h-1.5" />
+          <Progress value={((timerDuration - timeRemaining) / timerDuration) * 100} className="h-1.5" />
         </div>
       )}
     </>
