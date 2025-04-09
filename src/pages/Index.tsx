@@ -54,10 +54,10 @@ const Index: React.FC = () => {
       <Header />
       
       <main className="flex-1 flex items-center justify-center p-4 overflow-hidden">
-        <div className="w-full max-w-xl h-[calc(100vh-theme(space.20))] flex flex-col bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg rounded-lg overflow-hidden border border-white/30 dark:border-gray-800/30">
+        <div className="w-full max-w-xl flex flex-col bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg rounded-lg overflow-hidden border border-white/30 dark:border-gray-800/30">
           {!showChat ? (
-            <ScrollArea className="flex-1 px-4">
-              <div className="flex-1 flex flex-col items-center justify-center py-4">
+            <ScrollArea className="flex-1 h-[calc(100vh-10rem)]">
+              <div className="flex-1 flex flex-col items-center justify-center p-4">
                 <WelcomeScreen onStart={handleStart} />
                 
                 {/* Features grid */}

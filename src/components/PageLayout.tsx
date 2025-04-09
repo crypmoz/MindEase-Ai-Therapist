@@ -12,7 +12,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
     <div className="min-h-screen flex flex-col md:flex-row">
       <AnimatedBackground />
       <Navigation />
-      <main className="flex-1 p-4 md:p-8 overflow-auto">{children}</main>
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto max-h-screen">{children}</main>
     </div>
   );
 };
