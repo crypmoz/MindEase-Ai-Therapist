@@ -9,7 +9,7 @@ import PrivacyMessage from "@/components/PrivacyMessage";
 import PrivacyFAQ from "@/components/PrivacyFAQ";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpenText, Wind, Sparkles, SmilePlus, Heart, HelpCircle } from "lucide-react";
+import { Heart, HelpCircle } from "lucide-react";
 
 const FeatureCard: React.FC<{
   icon: React.ReactNode;
@@ -63,31 +63,7 @@ const Index: React.FC = () => {
                 {/* Features grid */}
                 <div className="w-full mt-8">
                   <h2 className="text-center text-lg font-medium mb-4">Explore Our Features</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <FeatureCard
-                      icon={<BookOpenText className="h-6 w-6 text-primary" />}
-                      title="Journal"
-                      description="Write your private thoughts"
-                      link="/journal"
-                    />
-                    <FeatureCard
-                      icon={<Wind className="h-6 w-6 text-primary" />}
-                      title="Breathing"
-                      description="Guided breathing exercises"
-                      link="/breathing"
-                    />
-                    <FeatureCard
-                      icon={<Sparkles className="h-6 w-6 text-primary" />}
-                      title="Meditation"
-                      description="Guided meditation sessions"
-                      link="/meditation"
-                    />
-                    <FeatureCard
-                      icon={<SmilePlus className="h-6 w-6 text-primary" />}
-                      title="Mood Tracker"
-                      description="Track your mood changes"
-                      link="/mood"
-                    />
+                  <div className="grid grid-cols-2 gap-3">
                     <FeatureCard
                       icon={<Heart className="h-6 w-6 text-primary" />}
                       title="Resources"

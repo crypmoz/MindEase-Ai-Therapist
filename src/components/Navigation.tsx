@@ -6,29 +6,19 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Home,
-  BookOpenText,
   Heart,
-  Wind,
-  SmilePlus,
-  Sparkles,
   HelpCircle,
   Menu,
-  X
 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
 
 const routes = [
   { path: "/", label: "Home", icon: Home },
-  { path: "/journal", label: "Journal", icon: BookOpenText },
   { path: "/resources", label: "Resources", icon: Heart },
-  { path: "/breathing", label: "Breathing", icon: Wind },
-  { path: "/mood", label: "Mood Tracker", icon: SmilePlus },
-  { path: "/meditation", label: "Meditation", icon: Sparkles },
   { path: "/faq", label: "FAQ", icon: HelpCircle },
 ];
 
