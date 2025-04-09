@@ -18,13 +18,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     // Split by double line breaks to identify paragraphs
     return text.split('\n\n').map((paragraph, i) => (
       <p key={i} className="mb-2 last:mb-0">
-        {paragraph.split('\n').map((line, j) => (
-          // Fixed: Removed data-lov-id prop from React.Fragment
-          <React.Fragment key={j}>
-            {line}
-            {j < paragraph.split('\n').length - 1 && <br />}
-          </React.Fragment>
-        ))}
+        {paragraph.split('\n').map((line, j) => {
+          // Properly return fragment with only valid props: key and children
+          return (
+            <React.Fragment key={j}>
+              {line}
+              {j < paragraph.split('\n').length - 1 && <br />}
+            </React.Fragment>
+          );
+        })}
       </p>
     ));
   };

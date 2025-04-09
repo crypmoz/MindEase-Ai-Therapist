@@ -10,11 +10,14 @@ export const processResponseText = (text: string | undefined): string => {
   // Start with basic cleaning
   let processedText = text.trim();
   
-  // Remove any random characters at the beginning more aggressively
-  processedText = processedText.replace(/^[^\w\[]*/, '').trim();
+  // Remove any random characters at the beginning with aggressive pattern matching
+  processedText = processedText.replace(/^[^\w\[]+/, '').trim();
   
-  // Clean up undefined strings at the end (more aggressively)
+  // Clean up undefined strings at the end with more aggressive pattern matching
   processedText = processedText.replace(/undefined[\s\S]*$/, '').trim();
+  
+  // Handle common AI output artifacts
+  processedText = processedText.replace(/^(AI:|Assistant:|Response:|Therapist:)/i, '').trim();
   
   // Preserve paragraph breaks (double line breaks)
   processedText = processedText.replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
