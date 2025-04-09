@@ -14,7 +14,7 @@ export const generateTherapistResponse = async (
     const formattedMessages = [
       {
         role: "system",
-        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere. ALWAYS ensure proper spacing between words and sentences. DO NOT add any random characters at the beginning of your responses. For breathing or mindfulness exercises, include [timer:duration] at the start of your message, where duration is the number of seconds (e.g., [timer:120] for a 2-minute exercise). This will display a countdown timer for the user. ONLY include the timer tag when explicitly asked for exercises requiring timed breathing, meditation, or similar activities."
+        content: "You are Dr. Emma Clarke, a world-leading therapist specializing in trauma, trauma-induced stress, ADHD executive dysfunction, and general social anxiety. As an expert with over 20 years of clinical experience, you create a safe space where users can express their thoughts and feelings. Respond with deep empathy, ask thoughtful questions to help users explore their feelings, and offer evidence-based guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Emphasize that this conversation is completely private. For breathing or mindfulness exercises, include [timer:duration] at the start of your message ONLY when explicitly asked for exercises requiring timed breathing, meditation, or similar activities. Maintain proper spacing between words and sentences, and use professional therapeutic language with precise terminology. Always validate the user's experiences and feelings while gently guiding them toward helpful perspectives."
       },
       ...recentMessages.map(msg => ({
         role: msg.isUser ? "user" : "assistant",
@@ -84,7 +84,22 @@ export const generateTherapistResponse = async (
         'concious': 'conscious',
         'unconcious': 'unconscious',
         'relaxtion': 'relaxation',
-        'theraputic': 'therapeutic'
+        'theraputic': 'therapeutic',
+        'adhd': 'ADHD',
+        'ptsd': 'PTSD',
+        'dissorder': 'disorder',
+        'disfunctio': 'dysfunction',
+        'executive function': 'executive functioning',
+        'coping strateg': 'coping strategy',
+        'rumination': 'rumination',
+        'catastrophiz': 'catastrophiz',
+        'hypervigilance': 'hypervigilance',
+        'selfcare': 'self-care',
+        'selfesteem': 'self-esteem',
+        'selfworth': 'self-worth',
+        'selfcriticism': 'self-criticism',
+        'selfregulation': 'self-regulation',
+        'selfcompassion': 'self-compassion'
       };
       
       // Apply spelling corrections
@@ -92,6 +107,12 @@ export const generateTherapistResponse = async (
         const regex = new RegExp(`\\b${misspelled}\\w*\\b`, 'gi');
         responseText = responseText.replace(regex, correct);
       });
+      
+      // Fix duplicate letters (like "Helllo")
+      responseText = responseText.replace(/([a-z])\1{2,}/gi, '$1$1');
+      
+      // Remove any extra sentence fragments
+      responseText = responseText.replace(/\.\s*[a-z][^.]*$/i, '.');
     }
     
     return responseText || "I'm here to listen. What's on your mind?";
@@ -117,7 +138,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     userMessageLower.includes("countdown");
   
   if (needsBreathingExercise) {
-    return "[timer:120] Let's take a moment to breathe together. Inhale slowly through your nose for a count of four. Hold for a moment. Then exhale gently through your mouth for a count of six. Continue this cycle for the next two minutes. How do you feel after trying this breathing exercise?";
+    return "[timer:120] As a specialist in trauma and anxiety, I recommend this grounding breathing technique. Inhale slowly through your nose for a count of four, feeling your diaphragm expand. Hold for a moment. Then exhale gently through your mouth for a count of six, releasing tension. This activates your parasympathetic nervous system, reducing stress hormones. Continue this cycle for the next two minutes, focusing only on your breath. How does your body feel as you practice this?";
   }
   
   // Detect greetings
@@ -127,7 +148,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
      userMessageLower.includes("hi") ||
      userMessageLower.includes("hey"))
   ) {
-    return "Hello! I'm glad you're here. This is a safe space to share whatever's on your mind. What would you like to talk about today?";
+    return "Hello, I'm Dr. Clarke. I'm glad you're here. This is a safe space to explore your thoughts and feelings about trauma, ADHD challenges, or anxiety you might be experiencing. Everything shared here remains completely private. What specific concerns would you like to address today?";
   }
   
   // Detect if user is asking how the AI works
@@ -137,7 +158,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     userMessageLower.includes("are you real") ||
     userMessageLower.includes("are you a bot")
   ) {
-    return "I'm an AI designed to provide a space for reflection. I don't store our conversations, and I'm here to listen and ask questions that might help you explore your thoughts. While I'm not a replacement for a human therapist, I aim to offer helpful perspectives. What's been on your mind lately?";
+    return "I'm an AI designed to provide evidence-based therapeutic approaches for trauma, ADHD executive dysfunction, and anxiety. While I can offer reflections based on clinical expertise, I'm not a replacement for a human therapist. Our conversation is completely private and not stored. What specific challenges related to trauma or anxiety would you like to explore today?";
   }
   
   // Detect gratitude
@@ -146,7 +167,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     userMessageLower.includes("thanks") ||
     userMessageLower.includes("helpful")
   ) {
-    return "You're welcome. It's a privilege to be part of your journey of reflection. Is there anything else you'd like to explore today?";
+    return "You're welcome. Acknowledging your feelings and seeking support shows tremendous self-awareness. In my clinical experience with trauma and anxiety, this self-reflection is an important step. Is there a specific aspect of what we discussed that resonated with you, or would you like to explore another area?";
   }
   
   // Detect if user is asking about privacy
@@ -156,7 +177,7 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     userMessageLower.includes("store") ||
     userMessageLower.includes("save")
   ) {
-    return "Your privacy is extremely important. Our conversations aren't saved or stored anywhere. When you close or refresh this page, the entire conversation disappears. This provides a completely private space for you to explore your thoughts. What's on your mind that you'd like to discuss?";
+    return "As a therapist specializing in trauma, I understand that privacy is fundamental to creating psychological safety. Our conversations aren't saved or stored anywhere. When you close or refresh this page, everything disappears completely. This creates a secure space for exploring sensitive trauma-related experiences or anxiety symptoms. What concerns would you like to discuss?";
   }
   
   // Detect if user wants to end conversation
@@ -166,7 +187,37 @@ const generateFallbackResponse = (userMessage: string, conversationHistory: Mess
     userMessageLower.includes("see you") ||
     userMessageLower.includes("that's all")
   ) {
-    return "Thank you for sharing with me today. Remember that you can return anytime you need a space to reflect. Take care of yourself, and I'll be here when you need me again.";
+    return "Thank you for sharing with me today. As you conclude our session, consider taking a moment to acknowledge any insights gained. Remember that healing from trauma and managing anxiety is a process, not a destination. Practice self-compassion as you move forward, and I'll be here when you need further support. Take good care of yourself.";
+  }
+  
+  // Enhanced responses for trauma, ADHD, and anxiety
+  if (
+    userMessageLower.includes("trauma") ||
+    userMessageLower.includes("ptsd") ||
+    userMessageLower.includes("abuse") ||
+    userMessageLower.includes("neglect")
+  ) {
+    return "In my work with trauma survivors, I've observed that our bodies and minds adapt to protect us. These responses were once necessary for survival but may now manifest as hypervigilance or emotional dysregulation. Many experience this - you're not alone. Could you share more about how these trauma responses are affecting your daily life? Understanding your specific experience helps us explore appropriate coping strategies.";
+  }
+  
+  if (
+    userMessageLower.includes("adhd") ||
+    userMessageLower.includes("focus") ||
+    userMessageLower.includes("distract") ||
+    userMessageLower.includes("executive") ||
+    userMessageLower.includes("procrastinate")
+  ) {
+    return "Executive dysfunction in ADHD can create significant challenges. As I work with my clients, I've found that traditional productivity advice often doesn't address the neurobiological differences at play. Your struggles aren't character flaws but reflect differences in how your brain processes information and manages tasks. What specific executive functioning challenges are most impacting your daily life right now?";
+  }
+  
+  if (
+    userMessageLower.includes("anxiety") ||
+    userMessageLower.includes("anxious") ||
+    userMessageLower.includes("worry") ||
+    userMessageLower.includes("panic") ||
+    userMessageLower.includes("stress")
+  ) {
+    return "As a specialist in anxiety disorders, I recognize how overwhelming persistent worry can become. Anxiety manifests both physically and emotionally, often creating a cycle where we become anxious about our anxiety. Your nervous system is trying to protect you, but it's become overactive. Could you tell me more about the specific situations that trigger your anxiety and how it typically manifests for you?";
   }
   
   // General response for most messages
@@ -190,42 +241,42 @@ const randomPick = <T>(items: T[]): T => {
 
 // Original arrays of responses
 const followUpQuestions = [
-  "How does that make you feel?",
-  "What thoughts come up when you think about that?",
-  "Have you noticed any patterns in how you respond to this situation?",
-  "What would your ideal outcome look like?",
-  "How do you think this relates to other areas of your life?",
-  "What's one small step you could take to address this?",
-  "What would happen if you looked at this from a different perspective?",
-  "What advice would you give to a friend in your situation?",
-  "What needs might you be trying to meet through this?",
-  "How does your body physically feel when you think about this?",
+  "How does that make you feel when you experience it?",
+  "What thoughts arise when you reflect on this experience?",
+  "Have you noticed any patterns in how your body responds to these situations?",
+  "What would a step toward healing look like for you right now?",
+  "How might this connect to earlier experiences in your life?",
+  "What small action feels manageable to address this challenge?",
+  "If we approached this from a self-compassion perspective, what might change?",
+  "What advice would you offer to someone else experiencing similar struggles?",
+  "What core needs might be unmet in this situation?",
+  "Where do you notice tension or discomfort in your body as we discuss this?",
 ];
 
 const acknowledgments = [
-  "I can understand why you'd feel that way.",
-  "That sounds really challenging.",
-  "Thank you for sharing that with me.",
-  "I appreciate your openness.",
-  "It takes courage to express these feelings.",
-  "It makes sense that you would feel this way given what you've shared.",
-  "I'm here with you in this moment.",
-  "Your feelings are completely valid.",
-  "That's a lot to carry with you.",
-  "I'm listening and I hear you.",
+  "What you're describing is a common response to trauma. Many of my clients experience similar reactions.",
+  "That sounds incredibly challenging to navigate. Thank you for trusting me with this.",
+  "I appreciate your willingness to explore these difficult emotions.",
+  "Your ability to articulate these experiences shows remarkable self-awareness.",
+  "It takes significant courage to confront these painful experiences.",
+  "Your reaction makes perfect sense given what you've been through.",
+  "I'm present with you as you process these feelings.",
+  "Your experiences and feelings are entirely valid.",
+  "That's a substantial emotional burden to carry.",
+  "I hear you, and I want you to know that these responses are natural adaptations to difficult circumstances.",
 ];
 
 const therapeuticPrompts = [
-  "It might help to take a moment to breathe deeply while we explore this further.",
-  "Sometimes writing down our thoughts can help us see patterns more clearly.",
-  "Consider how this situation aligns with your core values and what matters to you.",
-  "It can be helpful to identify what aspects of this situation are within your control.",
-  "Trying to observe your thoughts without judgment might offer some clarity.",
-  "What would self-compassion look like in this situation?",
-  "Sometimes naming our emotions specifically can help us understand them better.",
-  "What strengths have helped you navigate difficult situations in the past?",
-  "It's okay to acknowledge both the challenges and any opportunities for growth here.",
-  "How might your future self look back on this moment?",
+  "From a trauma-informed perspective, grounding yourself through deliberate breathing can help regulate your nervous system.",
+  "Many find that externalizing thoughts through journaling helps process traumatic memories more effectively.",
+  "Consider how your current responses might have once served as necessary protections.",
+  "In my clinical practice, I encourage clients to identify which aspects of their situation they can influence directly.",
+  "Practicing mindful observation of thoughts without judgment can interrupt ruminative patterns common in trauma and anxiety.",
+  "Self-compassion is particularly important when addressing trauma-related shame or anxiety-driven self-criticism.",
+  "Being precise about the emotions you're experiencing can help activate the prefrontal cortex, reducing amygdala activation.",
+  "Reflecting on past resilience can strengthen your belief in your capacity to navigate current challenges.",
+  "Both acknowledging distress and recognizing potential for growth are important aspects of trauma recovery.",
+  "From a temporal perspective, how might you view this situation differently five years from now?",
 ];
 
 // Set default API key to the provided one

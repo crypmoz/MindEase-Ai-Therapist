@@ -10,7 +10,7 @@ export interface Message {
 export const useChatState = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
-      text: "Hello, I'm here to provide a safe space for you to express your thoughts and feelings. What's on your mind today?", 
+      text: "Hello, I'm Dr. Emma Clarke, a specialist in trauma recovery, ADHD executive functioning, and anxiety management. This is a safe space to explore your thoughts and feelings. Everything shared here remains completely private. What brings you here today?", 
       isUser: false 
     },
   ]);
@@ -45,6 +45,10 @@ export const useChatState = () => {
             .replace(/([.!?])([a-zA-Z])/g, '$1 $2')
             // Fix multiple consecutive spaces
             .replace(/\s{2,}/g, ' ')
+            // Fix duplicate letters (like "Helllo")
+            .replace(/([a-z])\1{2,}/gi, '$1$1')
+            // Proper capitalization for clinical terms
+            .replace(/\b(adhd|ptsd)\b/gi, match => match.toUpperCase())
             .trim();
           
           setMessages(prev => [...prev, { text: finalResponse, isUser: false }]);
@@ -53,7 +57,7 @@ export const useChatState = () => {
         .catch(error => {
           console.error("Error in AI response:", error);
           setMessages(prev => [...prev, { 
-            text: "I'm having trouble understanding right now. Could you try expressing that another way?", 
+            text: "I'm having trouble with our connection right now. As a therapist, I know how important it is to maintain dialogue. Could you rephrase your thoughts or perhaps we could explore a different aspect of your experience?", 
             isUser: false 
           }]);
           setIsTherapistTyping(false);
