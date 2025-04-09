@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from "react";
-import MessageBubble from "./MessageBubble";
 import { Clock } from "lucide-react";
 import { Progress } from "./ui/progress";
 
@@ -101,7 +100,8 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
 
   // Show typing indicator when no content is available
   if (!content) {
-    return <div className="max-w-[80%] mb-3 mr-auto">
+    return (
+      <div className="max-w-[80%] mb-3 mr-auto">
         <div className="px-4 py-3 rounded-xl shadow-sm bg-secondary text-secondary-foreground rounded-bl-sm">
           <div className="typing-indicator">
             <span></span>
@@ -109,36 +109,37 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
             <span></span>
           </div>
         </div>
-      </div>;
+      </div>
+    );
   }
   
-  const messageContent = <>
-      <div className="text-sm whitespace-pre-line py-0 sm:text-base font-normal text-left px-[2px] mx-[3px] my-[13px] prose prose-sm dark:prose-invert">
-        {formatDisplayText(displayedText)}
-      </div>
-      
-      {/* Timer visualization - only shown when timer tag is present */}
-      {showTimer && <div className="mt-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-primary" />
-              <span className="text-xs text-muted-foreground">
-                {timeRemaining > 0 ? "Time remaining:" : "Time's up!"}
+  return (
+    <div className="max-w-[80%] mb-3 mr-auto message-transition">
+      <div className="px-4 py-3 rounded-xl shadow-sm bg-secondary text-secondary-foreground rounded-bl-sm">
+        <div className="text-sm whitespace-pre-line py-0 sm:text-base font-normal text-left px-[2px] mx-[3px] my-[13px] prose prose-sm dark:prose-invert">
+          {formatDisplayText(displayedText)}
+        </div>
+        
+        {/* Timer visualization - only shown when timer tag is present */}
+        {showTimer && (
+          <div className="mt-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="text-xs text-muted-foreground">
+                  {timeRemaining > 0 ? "Time remaining:" : "Time's up!"}
+                </span>
+              </div>
+              <span className="text-sm font-medium">
+                {formatTimeRemaining(timeRemaining)}
               </span>
             </div>
-            <span className="text-sm font-medium">
-              {formatTimeRemaining(timeRemaining)}
-            </span>
+            <Progress value={(timerDuration - timeRemaining) / timerDuration * 100} className="h-1.5" />
           </div>
-          <Progress value={(timerDuration - timeRemaining) / timerDuration * 100} className="h-1.5" />
-        </div>}
-    </>;
-    
-  return <div className="max-w-[80%] mb-3 mr-auto message-transition">
-      <div className="px-4 py-3 rounded-xl shadow-sm bg-secondary text-secondary-foreground rounded-bl-sm">
-        {messageContent}
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default TherapistMessage;

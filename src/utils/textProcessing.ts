@@ -13,6 +13,9 @@ export const processResponseText = (text: string | undefined): string => {
   // Remove any random characters at the beginning
   processedText = processedText.replace(/^[^a-zA-Z0-9\[]/, '').trim();
   
+  // Clean up undefined strings at the end
+  processedText = processedText.replace(/undefined\s*$/, '').trim();
+  
   // Preserve paragraph breaks (double line breaks)
   processedText = processedText.replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
   
