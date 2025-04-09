@@ -12,7 +12,7 @@ export type ProcessingStatus = "idle" | "processing" | "deleting";
 export const useChatState = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
-      text: "Hello, I'm Dr. Emma Clarke, a world-leading therapist specializing in trauma recovery, trauma-induced stress, ADHD executive functioning challenges, and general social anxiety. This is a safe space to explore your thoughts and feelings. Everything shared here remains completely private. What brings you here today?", 
+      text: "Hi there! This is a safe space where you can talk about whatever's on your mind. Whether you're dealing with stress, anxiety, or just need someone to listen - I'm here. Everything you share is completely private. What would you like to talk about today?", 
       isUser: false 
     },
   ]);
@@ -60,7 +60,7 @@ export const useChatState = () => {
         .catch(error => {
           console.error("Error in AI response:", error);
           setMessages(prev => [...prev, { 
-            text: "I'm having trouble with our connection right now. As a trauma-informed therapist, I understand the importance of maintaining our dialogue. Could you rephrase your thoughts, or perhaps we could explore a different aspect of your experience?", 
+            text: "I'm having trouble with our connection right now. I'd like to keep listening though. Could you try sharing your thoughts again?", 
             isUser: false 
           }]);
           setIsTherapistTyping(false);

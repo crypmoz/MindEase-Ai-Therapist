@@ -18,7 +18,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("countdown");
   
   if (needsBreathingExercise) {
-    return "[timer:120] As a specialist in trauma and anxiety, I recommend this grounding breathing technique. Inhale slowly through your nose for a count of four, feeling your diaphragm expand. Hold for a moment. Then exhale gently through your mouth for a count of six, releasing tension. This activates your parasympathetic nervous system, reducing stress hormones. Continue this cycle for the next two minutes, focusing only on your breath. How does your body feel as you practice this?";
+    return "[timer:120] Let's try a simple breathing exercise together. Breathe in slowly through your nose for a count of four. Hold for a moment. Then exhale gently through your mouth for a count of six. This can help calm your nervous system. Continue this pattern for the next two minutes, focusing just on your breath. How does this feel for you?";
   }
   
   // Detect greetings
@@ -28,7 +28,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
      userMessageLower.includes("hi") ||
      userMessageLower.includes("hey"))
   ) {
-    return "Hello, I'm Dr. Clarke. I'm glad you're here. This is a safe space to explore your thoughts and feelings about trauma, ADHD challenges, or anxiety you might be experiencing. Everything shared here remains completely private. What specific concerns would you like to address today?";
+    return "Hi there! It's good to meet you. This is a safe space where you can share whatever's on your mind. Everything we discuss stays private. What would you like to talk about today?";
   }
   
   // Detect if user is asking how the AI works
@@ -38,7 +38,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("are you real") ||
     userMessageLower.includes("are you a bot")
   ) {
-    return "I'm an AI designed to provide evidence-based therapeutic approaches for trauma, ADHD executive dysfunction, and anxiety. While I can offer reflections based on clinical expertise, I'm not a replacement for a human therapist. Our conversation is completely private and not stored. What specific challenges related to trauma or anxiety would you like to explore today?";
+    return "I'm an AI designed to be a supportive listener. While I can offer a space to reflect on your thoughts and feelings, I'm not a replacement for a human therapist. Our conversation is completely private and not stored. What's been on your mind lately?";
   }
   
   // Detect gratitude
@@ -47,7 +47,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("thanks") ||
     userMessageLower.includes("helpful")
   ) {
-    return "You're welcome. Acknowledging your feelings and seeking support shows tremendous self-awareness. In my clinical experience with trauma and anxiety, this self-reflection is an important step. Is there a specific aspect of what we discussed that resonated with you, or would you like to explore another area?";
+    return "You're welcome. Taking time to reflect on your feelings shows real self-awareness. Is there something specific that resonated with you, or would you like to explore something else?";
   }
   
   // Detect if user is asking about privacy
@@ -57,7 +57,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("store") ||
     userMessageLower.includes("save")
   ) {
-    return "As a therapist specializing in trauma, I understand that privacy is fundamental to creating psychological safety. Our conversations aren't saved or stored anywhere. When you close or refresh this page, everything disappears completely. This creates a secure space for exploring sensitive trauma-related experiences or anxiety symptoms. What concerns would you like to discuss?";
+    return "Your privacy is important. Our conversations aren't saved or stored anywhere. When you close or refresh this page, everything disappears completely. This creates a secure space for you to share your thoughts. What's been on your mind?";
   }
   
   // Detect if user wants to end conversation
@@ -67,7 +67,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("see you") ||
     userMessageLower.includes("that's all")
   ) {
-    return "Thank you for sharing with me today. As you conclude our session, consider taking a moment to acknowledge any insights gained. Remember that healing from trauma and managing anxiety is a process, not a destination. Practice self-compassion as you move forward, and I'll be here when you need further support. Take good care of yourself.";
+    return "Thank you for sharing with me today. Take a moment to acknowledge any insights you've gained. Remember to be gentle with yourself as you move forward. Take care, and I'll be here if you need to talk again.";
   }
   
   // Enhanced responses for trauma, ADHD, and anxiety
@@ -77,7 +77,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("abuse") ||
     userMessageLower.includes("neglect")
   ) {
-    return "In my work with trauma survivors, I've observed that our bodies and minds adapt to protect us. These responses were once necessary for survival but may now manifest as hypervigilance or emotional dysregulation. Many experience this - you're not alone. Could you share more about how these trauma responses are affecting your daily life? Understanding your specific experience helps us explore appropriate coping strategies.";
+    return "Our minds and bodies find ways to protect us from difficult experiences. These responses make sense, even if they're challenging now. You're not alone in this. Would you like to share more about how these experiences are affecting you?";
   }
   
   if (
@@ -87,7 +87,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("executive") ||
     userMessageLower.includes("procrastinate")
   ) {
-    return "Executive dysfunction in ADHD can create significant challenges. As I work with my clients, I've found that traditional productivity advice often doesn't address the neurobiological differences at play. Your struggles aren't character flaws but reflect differences in how your brain processes information and manages tasks. What specific executive functioning challenges are most impacting your daily life right now?";
+    return "Focus and attention challenges can be really frustrating. These aren't character flaws but reflect differences in how your brain processes information. What specific difficulties are you experiencing right now?";
   }
   
   if (
@@ -97,7 +97,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("panic") ||
     userMessageLower.includes("stress")
   ) {
-    return "As a specialist in anxiety disorders, I recognize how overwhelming persistent worry can become. Anxiety manifests both physically and emotionally, often creating a cycle where we become anxious about our anxiety. Your nervous system is trying to protect you, but it's become overactive. Could you tell me more about the specific situations that trigger your anxiety and how it typically manifests for you?";
+    return "Anxiety can feel overwhelming, both in your mind and body. Your nervous system is trying to protect you, but it might be working overtime. Could you tell me more about when you notice these feelings coming up?";
   }
   
   // General response for most messages
