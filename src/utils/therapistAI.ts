@@ -14,7 +14,7 @@ export const generateTherapistResponse = async (
     const formattedMessages = [
       {
         role: "system",
-        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere. Always ensure proper spacing between words and sentences."
+        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere. ALWAYS ensure proper spacing between words and sentences. DO NOT add any random characters at the beginning of your responses. For breathing or mindfulness exercises, include [timer] at the start of your message to display a progress indicator."
       },
       ...recentMessages.map(msg => ({
         role: msg.isUser ? "user" : "assistant",
@@ -54,8 +54,18 @@ export const generateTherapistResponse = async (
     }
 
     const data = await response.json();
-    // Ensure the response doesn't have undefined at the end
-    const responseText = data.choices[0].message.content.trim();
+    // Ensure the response doesn't have undefined at the end or any leading/trailing whitespace
+    let responseText = data.choices[0].message.content;
+    
+    // Clean up the response text to remove any unintended formatting issues
+    if (responseText) {
+      responseText = responseText.trim();
+      
+      // Check for and fix common formatting issues
+      responseText = responseText.replace(/\s{2,}/g, ' '); // Remove double spaces
+      responseText = responseText.replace(/^[a-zA-Z](?=\w)/, match => ' ' + match); // Fix joinedFirstLetters
+    }
+    
     return responseText || "I'm here to listen. What's on your mind?";
   } catch (error) {
     console.error("Error generating AI response:", error);
@@ -66,6 +76,19 @@ export const generateTherapistResponse = async (
 // Fallback mechanism using the original local response generator
 const generateFallbackResponse = (userMessage: string, conversationHistory: Message[]): string => {
   const userMessageLower = userMessage.toLowerCase();
+  
+  // Detect if user is asking about breathing exercises or mindfulness
+  if (
+    userMessageLower.includes("breathe") ||
+    userMessageLower.includes("breathing") ||
+    userMessageLower.includes("calm") ||
+    userMessageLower.includes("anxiety") ||
+    userMessageLower.includes("stress") ||
+    userMessageLower.includes("meditation") ||
+    userMessageLower.includes("mindful")
+  ) {
+    return "[timer] Let's take a moment to breathe together. Inhale slowly through your nose for a count of four. Hold for a moment. Then exhale gently through your mouth for a count of six. How do you feel after trying this simple breathing exercise?";
+  }
   
   // Detect greetings
   if (

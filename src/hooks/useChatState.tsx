@@ -17,15 +17,21 @@ export const useChatState = () => {
   const [isTherapistTyping, setIsTherapistTyping] = useState(false);
 
   const sendMessage = useCallback((text: string) => {
+    // Validate input
+    if (!text || text.trim() === "") return;
+    
+    // Clean the input
+    const cleanText = text.trim();
+    
     // Add user message
-    setMessages(prev => [...prev, { text, isUser: true }]);
+    setMessages(prev => [...prev, { text: cleanText, isUser: true }]);
     
     // Simulate AI thinking and typing
     setIsTherapistTyping(true);
     
     // Generate therapist response with a slight delay to feel natural
     setTimeout(() => {
-      generateTherapistResponse(text, messages)
+      generateTherapistResponse(cleanText, messages)
         .then(response => {
           // Make sure response is not undefined and properly spaced
           const cleanResponse = response ? response.trim() : 
