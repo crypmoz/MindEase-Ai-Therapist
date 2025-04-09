@@ -1,17 +1,14 @@
-
 import React, { useState, useEffect } from "react";
 import MessageBubble from "./MessageBubble";
 import { Clock } from "lucide-react";
 import { Progress } from "./ui/progress";
-
 interface TherapistMessageProps {
   content: string;
   typingDelay?: number;
 }
-
-const TherapistMessage: React.FC<TherapistMessageProps> = ({ 
+const TherapistMessage: React.FC<TherapistMessageProps> = ({
   content,
-  typingDelay = 30 
+  typingDelay = 30
 }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
@@ -19,18 +16,16 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
   const [showTimer, setShowTimer] = useState(false);
   const [timerDuration, setTimerDuration] = useState(60); // Default 60 seconds
   const [timeRemaining, setTimeRemaining] = useState(60);
-  
   useEffect(() => {
     if (!content) return;
-    
     setIsTyping(true);
     setDisplayedText("");
-    
+
     // Check for timer tag with optional duration [timer:duration]
     const timerMatch = content.match(/\[timer(?::(\d+))?\]/);
     const shouldShowTimer = timerMatch !== null;
     setShowTimer(shouldShowTimer);
-    
+
     // Extract duration if specified, default to 60 seconds otherwise
     if (shouldShowTimer && timerMatch && timerMatch[1]) {
       const duration = parseInt(timerMatch[1], 10);
@@ -40,17 +35,15 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
       setTimerDuration(60);
       setTimeRemaining(60);
     }
-    
+
     // Clean the content of any timer tags
     const cleanContent = content.replace(/\[timer(?::(\d+))?\]/, "").trim();
-    
     let currentIndex = 0;
     const totalLength = cleanContent.length;
-    
     const typingTimer = setInterval(() => {
       if (currentIndex < totalLength) {
         setDisplayedText(prevText => prevText + cleanContent[currentIndex]);
-        setProgressValue((currentIndex / totalLength) * 100);
+        setProgressValue(currentIndex / totalLength * 100);
         currentIndex++;
       } else {
         clearInterval(typingTimer);
@@ -58,7 +51,6 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
         setProgressValue(100);
       }
     }, typingDelay);
-
     return () => clearInterval(typingTimer);
   }, [content, typingDelay]);
 
@@ -74,7 +66,6 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
           return prev - 1;
         });
       }, 1000);
-      
       return () => clearInterval(countdownTimer);
     }
   }, [isTyping, showTimer, timeRemaining]);
@@ -88,8 +79,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
 
   // Show typing indicator when no content is available
   if (!content) {
-    return (
-      <div className="max-w-[80%] mb-3 mr-auto">
+    return <div className="max-w-[80%] mb-3 mr-auto">
         <div className="px-4 py-3 rounded-xl shadow-sm bg-secondary text-secondary-foreground rounded-bl-sm">
           <div className="typing-indicator">
             <span></span>
@@ -97,17 +87,13 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
             <span></span>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  const messageContent = (
-    <>
-      <p className="text-sm sm:text-base whitespace-pre-wrap">{displayedText}</p>
+  const messageContent = <>
+      <p className="text-sm whitespace-pre-wrap py-0 sm:text-base font-normal text-left px-[2px] mx-[3px] my-[13px]">{displayedText}</p>
       
       {/* Timer visualization - only shown when timer tag is present */}
-      {showTimer && (
-        <div className="mt-3 space-y-2">
+      {showTimer && <div className="mt-3 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
@@ -119,19 +105,13 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
               {formatTimeRemaining(timeRemaining)}
             </span>
           </div>
-          <Progress value={((timerDuration - timeRemaining) / timerDuration) * 100} className="h-1.5" />
-        </div>
-      )}
-    </>
-  );
-
-  return (
-    <div className="max-w-[80%] mb-3 mr-auto message-transition">
+          <Progress value={(timerDuration - timeRemaining) / timerDuration * 100} className="h-1.5" />
+        </div>}
+    </>;
+  return <div className="max-w-[80%] mb-3 mr-auto message-transition">
       <div className="px-4 py-3 rounded-xl shadow-sm bg-secondary text-secondary-foreground rounded-bl-sm">
         {messageContent}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default TherapistMessage;
