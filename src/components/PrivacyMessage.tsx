@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Shield, Clock, Lock, Eye, AlertTriangle, ExternalLink } from "lucide-react";
+import { Shield, Clock, Lock, Eye, AlertTriangle, ExternalLink, HelpCircle, Code } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -11,8 +11,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-const PrivacyMessage: React.FC = () => {
+interface PrivacyMessageProps {
+  onFAQClick?: () => void;
+}
+
+const PrivacyMessage: React.FC<PrivacyMessageProps> = ({ onFAQClick }) => {
   return (
     <div className="w-full max-w-md mx-auto mb-6">
       <div className="glass rounded-xl p-4 text-sm text-muted-foreground border border-green-200 dark:border-green-900 bg-green-50/30 dark:bg-green-950/20">
@@ -40,7 +45,7 @@ const PrivacyMessage: React.FC = () => {
               This conversation happens locally in your browser and is never transmitted to our servers.
             </p>
             
-            <div className="flex mt-2 space-x-2">
+            <div className="flex flex-wrap mt-2 gap-x-2 gap-y-1">
               {/* Detailed Privacy Information Dialog */}
               <Dialog>
                 <DialogTrigger asChild>
@@ -104,6 +109,46 @@ const PrivacyMessage: React.FC = () => {
                   <ExternalLink className="h-3 w-3" />
                 </Button>
               </Link>
+              
+              <span className="text-muted-foreground">•</span>
+              
+              {/* Link to Technical Details */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="link" className="h-auto p-0 text-green-600 dark:text-green-400 flex items-center gap-1">
+                    <span>Technical details</span>
+                    <Code className="h-3 w-3" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Our Zero-Storage Architecture</h4>
+                    <p className="text-xs text-muted-foreground">
+                      This application is built using a client-side architecture with React state management. 
+                      All data exists only in volatile memory (RAM) and is never persisted to storage:
+                    </p>
+                    <div className="text-xs bg-muted p-2 rounded-md text-muted-foreground font-mono">
+                      • No database connections<br />
+                      • No server-side storage<br />
+                      • No cookies or localStorage<br />
+                      • No session persistence<br />
+                      • Memory cleared on page unload
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
+              <span className="text-muted-foreground">•</span>
+              
+              {/* FAQ Button */}
+              <Button 
+                variant="link" 
+                className="h-auto p-0 text-green-600 dark:text-green-400 flex items-center gap-1"
+                onClick={onFAQClick}
+              >
+                <span>Privacy FAQ</span>
+                <HelpCircle className="h-3 w-3" />
+              </Button>
             </div>
           </div>
         </div>

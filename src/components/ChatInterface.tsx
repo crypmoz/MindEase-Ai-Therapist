@@ -5,16 +5,20 @@ import TherapistMessage from "./TherapistMessage";
 import UserInput from "./UserInput";
 import PrivacyMessage from "./PrivacyMessage";
 import ApiKeySetup from "./ApiKeySetup";
+import DataProcessingIndicator from "./DataProcessingIndicator";
+import PrivacyFAQ from "./PrivacyFAQ";
 import { useChatState } from "@/hooks/useChatState";
 
 const ChatInterface: React.FC = () => {
   const { 
     messages, 
-    isTherapistTyping, 
+    isTherapistTyping,
+    processingStatus,
     sendMessage 
   } = useChatState();
   
   const [apiKeySet, setApiKeySet] = useState(false);
+  const [showPrivacyFAQ, setShowPrivacyFAQ] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -28,7 +32,7 @@ const ChatInterface: React.FC = () => {
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto">
       <div className="flex-1 overflow-y-auto p-4 scrollbar-none">
-        <PrivacyMessage />
+        <PrivacyMessage onFAQClick={() => setShowPrivacyFAQ(true)} />
         
         <ApiKeySetup onApiKeySet={() => setApiKeySet(true)} />
         
@@ -62,6 +66,14 @@ const ChatInterface: React.FC = () => {
           isTherapistTyping={isTherapistTyping} 
         />
       </div>
+      
+      {/* Privacy FAQ modal */}
+      {showPrivacyFAQ && (
+        <PrivacyFAQ onClose={() => setShowPrivacyFAQ(false)} />
+      )}
+      
+      {/* Processing status indicator */}
+      <DataProcessingIndicator status={processingStatus} />
     </div>
   );
 };

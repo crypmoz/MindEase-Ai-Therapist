@@ -7,6 +7,8 @@ export interface Message {
   isUser: boolean;
 }
 
+export type ProcessingStatus = "idle" | "processing" | "deleting";
+
 export const useChatState = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
@@ -15,6 +17,20 @@ export const useChatState = () => {
     },
   ]);
   const [isTherapistTyping, setIsTherapistTyping] = useState(false);
+  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>("idle");
+
+  // Add event listener for page unload to show deleting status
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      setProcessingStatus("deleting");
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const sendMessage = useCallback((text: string) => {
     // Validate input
@@ -26,8 +42,8 @@ export const useChatState = () => {
     // Add user message
     setMessages(prev => [...prev, { text: cleanText, isUser: true }]);
     
-    // Simulate AI thinking and typing
-    setIsTherapistTyping(true);
+    // Show processing indicator
+    setProcessingStatus("processing");
     
     // Generate therapist response with a slight delay to feel natural
     setTimeout(() => {
@@ -43,6 +59,7 @@ export const useChatState = () => {
           
           setMessages(prev => [...prev, { text: cleanResponse, isUser: false }]);
           setIsTherapistTyping(false);
+          setProcessingStatus("idle");
         })
         .catch(error => {
           console.error("Error in AI response:", error);
@@ -51,13 +68,18 @@ export const useChatState = () => {
             isUser: false 
           }]);
           setIsTherapistTyping(false);
+          setProcessingStatus("idle");
         });
     }, 500 + Math.random() * 1000); // Random delay between 500-1500ms
+    
+    // Simulate AI thinking and typing
+    setIsTherapistTyping(true);
   }, [messages]);
 
   return {
     messages,
     isTherapistTyping,
+    processingStatus,
     sendMessage,
   };
 };
