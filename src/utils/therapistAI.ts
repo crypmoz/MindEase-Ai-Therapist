@@ -1,3 +1,4 @@
+
 import type { Message } from "@/hooks/useChatState";
 
 // Deepseek API integration for more sophisticated responses
@@ -28,7 +29,7 @@ export const generateTherapistResponse = async (
     // This is a fallback mechanism if the API call fails
     if (!apiKey) {
       console.log("Using fallback response mechanism - no API key configured");
-      return generateFallbackResponse(userMessage, conversationHistory);
+      return processResponseText(generateFallbackResponse(userMessage, conversationHistory));
     }
 
     // Call the Deepseek API
@@ -49,140 +50,202 @@ export const generateTherapistResponse = async (
     if (!response.ok) {
       const errorData = await response.json();
       console.error("API Error:", errorData);
-      return generateFallbackResponse(userMessage, conversationHistory);
+      return processResponseText(generateFallbackResponse(userMessage, conversationHistory));
     }
 
     const data = await response.json();
     // Process the response text to fix formatting issues
     let responseText = data.choices[0].message.content;
     
-    // Enhanced comprehensive text processing
-    if (responseText) {
-      // Trim whitespace
-      responseText = responseText.trim();
-      
-      // Remove any random characters at the beginning
-      responseText = responseText.replace(/^[^a-zA-Z0-9\[]/, '').trim();
-      
-      // Fix multiple consecutive spaces
-      responseText = responseText.replace(/\s{2,}/g, ' ');
-      
-      // Fix common formatting issues where words are joined
-      responseText = responseText.replace(/([a-z])([A-Z])/g, '$1 $2');
-      
-      // Fix missing spaces after punctuation
-      responseText = responseText.replace(/([.!?])([a-zA-Z])/g, '$1 $2');
-      
-      // Add space after commas if missing
-      responseText = responseText.replace(/,([a-zA-Z])/g, ', $1');
-      
-      // Fix incorrect capitalization
-      responseText = responseText.replace(/\b(i)\b/g, 'I');
-      
-      // Fix spaced hyphens in compound words
-      responseText = responseText.replace(/(\w+)\s-\s(\w+)/g, '$1-$2');
-      
-      // Ensure proper spacing around parentheses
-      responseText = responseText.replace(/\s*\(\s*/g, ' (');
-      responseText = responseText.replace(/\s*\)\s*/g, ') ');
-      
-      // Fix non-standard quotes
-      responseText = responseText.replace(/['']/g, "'");
-      responseText = responseText.replace(/[""]/g, '"');
-      
-      // Replace double periods
-      responseText = responseText.replace(/\.{2,}/g, '.');
-      
-      // Expand comprehensive spelling corrections
-      const commonSpellingCorrections = {
-        'anxiet': 'anxiety',
-        'depresion': 'depression',
-        'mindfullness': 'mindfulness',
-        'medittation': 'meditation',
-        'breath': 'breathe',
-        'concious': 'conscious',
-        'unconcious': 'unconscious',
-        'relaxtion': 'relaxation',
-        'theraputic': 'therapeutic',
-        'adhd': 'ADHD',
-        'ptsd': 'PTSD',
-        'dissorder': 'disorder',
-        'disfunctio': 'dysfunction',
-        'executive function': 'executive functioning',
-        'coping strateg': 'coping strategy',
-        'rumination': 'rumination',
-        'catastrophiz': 'catastrophizing',
-        'hypervigilance': 'hypervigilance',
-        'selfcare': 'self-care',
-        'selfesteem': 'self-esteem',
-        'selfworth': 'self-worth',
-        'selfcriticism': 'self-criticism',
-        'selfregulation': 'self-regulation',
-        'selfcompassion': 'self-compassion',
-        'cognitive behavioral': 'Cognitive Behavioral',
-        'cbt': 'CBT',
-        'dbt': 'DBT',
-        'dialectical behavior': 'Dialectical Behavior',
-        'autum': 'autumn',
-        'gratefull': 'grateful',
-        'gratful': 'grateful',
-        'helpfull': 'helpful',
-        'truely': 'truly',
-        'beleive': 'believe',
-        'believ': 'believe',
-        'recieve': 'receive',
-        'percieve': 'perceive',
-        'acheive': 'achieve',
-        'experiance': 'experience',
-        'stressors': 'stressors',
-        'sympthom': 'symptom',
-        'alot': 'a lot',
-        'aswell': 'as well',
-        'asthough': 'as though',
-        'eachother': 'each other',
-        'cant': "can't",
-        'dont': "don't",
-        'didnt': "didn't",
-        'wouldnt': "wouldn't",
-        'shouldnt': "shouldn't",
-        'couldnt': "couldn't",
-        'isnt': "isn't",
-        'arent': "aren't",
-        'doesnt': "doesn't",
-        'neccessary': 'necessary',
-        'neccesary': 'necessary',
-        'relevent': 'relevant',
-        'relivent': 'relevant',
-        'tommorrow': 'tomorrow'
-      };
-      
-      // Apply spelling corrections
-      Object.entries(commonSpellingCorrections).forEach(([misspelled, correct]) => {
-        const regex = new RegExp(`\\b${misspelled}\\w*\\b`, 'gi');
-        responseText = responseText.replace(regex, correct);
-      });
-      
-      // Fix duplicate letters (like "Helllo") more aggressively
-      responseText = responseText.replace(/([a-z])\1{3,}/gi, '$1$1');
-      
-      // Fix sentence capitalization
-      responseText = responseText.replace(/(?:^|[.!?]\s+)([a-z])/g, match => match.toUpperCase());
-      
-      // Ensure clinical terms are properly capitalized
-      responseText = responseText.replace(/\b(adhd|ptsd|cbt|dbt)\b/gi, match => match.toUpperCase());
-      
-      // Remove any extra sentence fragments
-      responseText = responseText.replace(/\.\s*[a-z][^.]*$/i, '.');
-      
-      // Final trim to remove any leading/trailing whitespace
-      responseText = responseText.trim();
-    }
-    
-    return responseText || "I'm here to listen. What's on your mind?";
+    return processResponseText(responseText);
   } catch (error) {
     console.error("Error generating AI response:", error);
-    return generateFallbackResponse(userMessage, conversationHistory);
+    return processResponseText(generateFallbackResponse(userMessage, conversationHistory));
   }
+};
+
+// Centralized text processing function for consistent formatting
+const processResponseText = (text: string | undefined): string => {
+  if (!text) {
+    return "I'm here to listen. What's on your mind?";
+  }
+  
+  // Start with basic cleaning
+  let processedText = text.trim();
+  
+  // Remove any random characters at the beginning
+  processedText = processedText.replace(/^[^a-zA-Z0-9\[]/, '').trim();
+  
+  // Fix multiple consecutive spaces
+  processedText = processedText.replace(/\s{2,}/g, ' ');
+  
+  // Fix common formatting issues where words are joined
+  processedText = processedText.replace(/([a-z])([A-Z])/g, '$1 $2');
+  
+  // Fix missing spaces after punctuation
+  processedText = processedText.replace(/([.!?])([a-zA-Z])/g, '$1 $2');
+  
+  // Add space after commas if missing
+  processedText = processedText.replace(/,([a-zA-Z])/g, ', $1');
+  
+  // Fix incorrect capitalization of "I"
+  processedText = processedText.replace(/\b(i)\b/g, 'I');
+  
+  // Fix spaced hyphens in compound words
+  processedText = processedText.replace(/(\w+)\s-\s(\w+)/g, '$1-$2');
+  
+  // Ensure proper spacing around parentheses
+  processedText = processedText.replace(/\s*\(\s*/g, ' (');
+  processedText = processedText.replace(/\s*\)\s*/g, ') ');
+  
+  // Fix non-standard quotes
+  processedText = processedText.replace(/['']/g, "'");
+  processedText = processedText.replace(/[""]/g, '"');
+  
+  // Replace double periods
+  processedText = processedText.replace(/\.{2,}/g, '.');
+  
+  // Fix duplicate letters (like "Helllo") more aggressively
+  processedText = processedText.replace(/([a-z])\1{3,}/gi, '$1$1');
+  
+  // Fix sentence capitalization
+  processedText = processedText.replace(/(?:^|[.!?]\s+)([a-z])/g, match => match.toUpperCase());
+
+  // Fix runs of misplaced punctuation
+  processedText = processedText.replace(/([,.!?;:]){2,}/g, '$1');
+
+  // Comprehensive spelling and term corrections
+  const clinicalTermCorrections = {
+    // Psychology terms
+    'anxiet': 'anxiety',
+    'depresion': 'depression', 
+    'mindfullness': 'mindfulness',
+    'medittation': 'meditation',
+    'breath': 'breathe',
+    'concious': 'conscious',
+    'unconcious': 'unconscious',
+    'relaxtion': 'relaxation',
+    'theraputic': 'therapeutic',
+    'dissorder': 'disorder',
+    'disfunctio': 'dysfunction',
+    'executive function': 'executive functioning',
+    'coping strateg': 'coping strategy',
+    'rumination': 'rumination',
+    'catastrophiz': 'catastrophizing',
+    'hypervigilance': 'hypervigilance',
+    
+    // Self-related terms
+    'selfcare': 'self-care',
+    'selfesteem': 'self-esteem',
+    'selfworth': 'self-worth',
+    'selfcriticism': 'self-criticism',
+    'selfregulation': 'self-regulation',
+    'selfcompassion': 'self-compassion',
+    'selftalk': 'self-talk',
+    'selfawareness': 'self-awareness',
+    'selfknowledge': 'self-knowledge',
+    
+    // Therapy approaches
+    'cognitive behavioral': 'Cognitive Behavioral',
+    'dialectical behavior': 'Dialectical Behavior',
+    'acceptance commitment': 'Acceptance and Commitment',
+    'psychodynamic': 'Psychodynamic',
+    'interpersonal': 'Interpersonal',
+    'trauma informed': 'trauma-informed',
+    'trauma focused': 'trauma-focused',
+    'solution focused': 'solution-focused',
+    'narrative therapy': 'Narrative Therapy',
+    'psychoanalytic': 'Psychoanalytic',
+    
+    // Acronyms
+    'cbt': 'CBT',
+    'dbt': 'DBT',
+    'act': 'ACT',
+    'emdr': 'EMDR',
+    'adhd': 'ADHD',
+    'ptsd': 'PTSD',
+    'ocpd': 'OCPD',
+    'ocd': 'OCD',
+    'gad': 'GAD',
+    
+    // Common spelling errors
+    'gratefull': 'grateful',
+    'gratful': 'grateful',
+    'helpfull': 'helpful',
+    'truely': 'truly',
+    'beleive': 'believe',
+    'believ': 'believe',
+    'recieve': 'receive',
+    'percieve': 'perceive',
+    'acheive': 'achieve',
+    'experiance': 'experience',
+    'stressors': 'stressors',
+    'sympthom': 'symptom',
+    'alot': 'a lot',
+    'aswell': 'as well',
+    'asthough': 'as though',
+    'eachother': 'each other',
+    'neccessary': 'necessary',
+    'neccesary': 'necessary',
+    'relevent': 'relevant',
+    'relivent': 'relevant',
+    'tommorrow': 'tomorrow',
+    'simptom': 'symptom',
+    'tecnique': 'technique',
+    'exercize': 'exercise',
+    
+    // Contractions
+    'cant': "can't",
+    'dont': "don't",
+    'didnt': "didn't",
+    'wouldnt': "wouldn't",
+    'shouldnt': "shouldn't",
+    'couldnt': "couldn't",
+    'isnt': "isn't",
+    'arent': "aren't",
+    'doesnt': "doesn't",
+    'hasnt': "hasn't",
+    'havnt': "haven't",
+    'werent': "weren't",
+    'wasnt': "wasn't",
+    'shouldve': "should've",
+    'couldve': "could've",
+    'wouldve': "would've",
+    'youre': "you're",
+    'theyre': "they're",
+    'were': "we're",
+    'whos': "who's",
+    'whats': "what's"
+  };
+  
+  // Apply clinical term corrections with word boundary checks
+  Object.entries(clinicalTermCorrections).forEach(([incorrect, correct]) => {
+    const regex = new RegExp(`\\b${incorrect}\\w*\\b`, 'gi');
+    processedText = processedText.replace(regex, (match) => {
+      // Preserve capitalization if the first letter was capital
+      if (match.charAt(0) === match.charAt(0).toUpperCase()) {
+        return correct.charAt(0).toUpperCase() + correct.slice(1);
+      }
+      return correct;
+    });
+  });
+  
+  // Ensure proper capitalization of specific terms regardless of position
+  const alwaysCapitalized = ['CBT', 'DBT', 'ACT', 'EMDR', 'ADHD', 'PTSD', 'OCD', 'OCPD', 'GAD'];
+  alwaysCapitalized.forEach(term => {
+    const regex = new RegExp(`\\b${term.toLowerCase()}\\b`, 'g');
+    processedText = processedText.replace(regex, term);
+  });
+  
+  // Fix redundant phrases
+  processedText = processedText.replace(/\b(you can|you could) (try to|attempt to)\b/gi, 'you can try to');
+  processedText = processedText.replace(/\b(in my opinion|I think|I believe|from my perspective),? (I think|I believe)\b/gi, 'I believe');
+  
+  // Remove any extra sentence fragments at the end
+  processedText = processedText.replace(/\.\s*[a-z][^.]*$/i, '.');
+  
+  // Final trim
+  return processedText.trim();
 };
 
 // Update useChatState.tsx to handle response formatting

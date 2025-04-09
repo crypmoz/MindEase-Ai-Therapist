@@ -10,7 +10,7 @@ export interface Message {
 export const useChatState = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
-      text: "Hello, I'm Dr. Emma Clarke, a specialist in trauma recovery, ADHD executive functioning, and anxiety management. This is a safe space to explore your thoughts and feelings. Everything shared here remains completely private. What brings you here today?", 
+      text: "Hello, I'm Dr. Emma Clarke, a world-leading therapist specializing in trauma recovery, trauma-induced stress, ADHD executive functioning challenges, and general social anxiety. This is a safe space to explore your thoughts and feelings. Everything shared here remains completely private. What brings you here today?", 
       isUser: false 
     },
   ]);
@@ -38,40 +38,16 @@ export const useChatState = () => {
             "I'm here to listen. What would you like to talk about?";
           
           // Enhanced formatting check with more comprehensive text processing
-          const finalResponse = cleanResponse
-            // Remove any random characters or markdown artifacts at the beginning
-            .replace(/^[^a-zA-Z0-9\[]/g, '')
-            // Ensure proper spacing after punctuation
-            .replace(/([.!?])([a-zA-Z])/g, '$1 $2')
-            // Fix multiple consecutive spaces
-            .replace(/\s{2,}/g, ' ')
-            // Fix duplicate letters (like "Helllo") more aggressively
-            .replace(/([a-z])\1{2,}/gi, '$1$1')
-            // Fix incorrect capitalization
-            .replace(/\b(i)\b/g, 'I')
-            // Proper capitalization for clinical terms
-            .replace(/\b(adhd|ptsd|cbt|dbt)\b/gi, match => match.toUpperCase())
-            // Fix spaced hyphens in compound words
-            .replace(/(\w+)\s-\s(\w+)/g, '$1-$2')
-            // Ensure proper spacing around parentheses
-            .replace(/\s*\(\s*/g, ' (')
-            .replace(/\s*\)\s*/g, ') ')
-            // Fix non-standard quotes
-            .replace(/['']/g, "'")
-            .replace(/[""]/g, '"')
-            // Replace double periods
-            .replace(/\.{2,}/g, '.')
-            // Add space after commas if missing
-            .replace(/,([a-zA-Z])/g, ', $1')
-            .trim();
+          // All formatting is now centralized in the therapistAI.ts file
+          // to ensure consistency across all responses
           
-          setMessages(prev => [...prev, { text: finalResponse, isUser: false }]);
+          setMessages(prev => [...prev, { text: cleanResponse, isUser: false }]);
           setIsTherapistTyping(false);
         })
         .catch(error => {
           console.error("Error in AI response:", error);
           setMessages(prev => [...prev, { 
-            text: "I'm having trouble with our connection right now. As a therapist, I know how important it is to maintain dialogue. Could you rephrase your thoughts or perhaps we could explore a different aspect of your experience?", 
+            text: "I'm having trouble with our connection right now. As a trauma-informed therapist, I understand the importance of maintaining our dialogue. Could you rephrase your thoughts, or perhaps we could explore a different aspect of your experience?", 
             isUser: false 
           }]);
           setIsTherapistTyping(false);
