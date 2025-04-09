@@ -60,9 +60,9 @@ const Index: React.FC = () => {
               <div className="flex-1 flex flex-col items-center justify-center p-4">
                 <WelcomeScreen onStart={handleStart} />
                 
-                {/* Features grid */}
+                {/* Resources section */}
                 <div className="w-full mt-8">
-                  <h2 className="text-center text-lg font-medium mb-4">Explore Our Features</h2>
+                  <h2 className="text-center text-lg font-medium mb-4">Helpful Resources</h2>
                   <div className="grid grid-cols-2 gap-3">
                     <FeatureCard
                       icon={<Heart className="h-6 w-6 text-primary" />}
