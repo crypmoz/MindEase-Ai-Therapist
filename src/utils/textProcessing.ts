@@ -66,7 +66,6 @@ export const processResponseText = (text: string | undefined): string => {
     processedText = processedText.replace(regex, (match) => {
       // Preserve capitalization if the first letter was capital
       if (typeof match === 'string' && match.length > 0) {
-        // Ensure match is a string before using string methods
         if (match.charAt(0) === match.charAt(0).toUpperCase()) {
           return correct.charAt(0).toUpperCase() + correct.slice(1);
         }
@@ -85,6 +84,27 @@ export const processResponseText = (text: string | undefined): string => {
   processedText = processedText.replace(/\b(you can|you could) (try to|attempt to)\b/gi, 'you can try to');
   processedText = processedText.replace(/\b(in my opinion|I think|I believe|from my perspective),? (I think|I believe)\b/gi, 'I believe');
   
+  // Additional grammar and spacing improvements
+  
+  // Fix spacing after periods in abbreviations (e.g., "e.g." should not trigger a double space)
+  processedText = processedText.replace(/(\b\w\.\w\.)\s{2,}/g, '$1 ');
+  
+  // Fix common grammar errors
+  processedText = processedText.replace(/\b(doesnt|dont|isnt|arent|didnt|couldnt|wouldnt|shouldnt)\b/gi, 
+    match => match.charAt(0) + "o" + match.slice(1, match.length-1) + "'" + match.slice(-1));
+  
+  // Fix "it's" vs "its" common errors
+  processedText = processedText.replace(/\bits\s+(a|the|been|not|very|quite|really|so|too|just|only)\b/gi, "it's $1");
+  
+  // Fix double conjunctions
+  processedText = processedText.replace(/\b(and|but|or|yet|so) (and|but|or|yet|so)\b/gi, '$1');
+  
+  // Fix "a" vs "an" for words starting with vowels
+  processedText = processedText.replace(/\ba\s+([aeiou])/gi, 'an $1');
+  
+  // Fix spacing around dashes for better readability
+  processedText = processedText.replace(/(\w)—(\w)/g, '$1 — $2');
+  
   // Remove any extra sentence fragments at the end
   processedText = processedText.replace(/\.\s*[a-z][^.]*$/i, '.');
   
@@ -92,6 +112,9 @@ export const processResponseText = (text: string | undefined): string => {
   if (!/[.!?]$/.test(processedText)) {
     processedText += '.';
   }
+  
+  // Final clean-up: ensure consistent spacing throughout
+  processedText = processedText.replace(/\s{2,}/g, ' ').trim();
   
   // Final trim
   return processedText.trim();

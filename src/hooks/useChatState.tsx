@@ -12,7 +12,7 @@ export type ProcessingStatus = "idle" | "processing" | "deleting";
 export const useChatState = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
-      text: "Hi there! This is a safe space where you can talk about whatever's on your mind. Whether you're dealing with stress, anxiety, or just need someone to listen - I'm here. Everything you share is completely private. What would you like to talk about today?", 
+      text: "Hi there! This is a safe space where you can talk about whatever's on your mind. Whether you're dealing with stress, anxiety, or just need someone to listen - I'm here. What would you like to talk about today?", 
       isUser: false 
     },
   ]);
@@ -60,7 +60,7 @@ export const useChatState = () => {
         .catch(error => {
           console.error("Error in AI response:", error);
           setMessages(prev => [...prev, { 
-            text: "I'm having trouble with our connection right now. I'd like to keep listening though. Could you try sharing your thoughts again?", 
+            text: "I'm having trouble with our connection right now. Could you try sharing your thoughts again?", 
             isUser: false 
           }]);
           setIsTherapistTyping(false);

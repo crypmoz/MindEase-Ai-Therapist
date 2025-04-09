@@ -18,7 +18,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("countdown");
   
   if (needsBreathingExercise) {
-    return "[timer:120] Let's try a simple breathing exercise together. Breathe in slowly through your nose for a count of four. Hold for a moment. Then exhale gently through your mouth for a count of six. This can help calm your nervous system. Continue this pattern for the next two minutes, focusing just on your breath. How does this feel for you?";
+    return "[timer:120] Let's try a simple breathing exercise together. Breathe in slowly through your nose for 4 counts. Hold for a moment. Then exhale gently through your mouth for 6 counts. This helps calm your nervous system. Continue this pattern for the next two minutes, focusing on your breath.";
   }
   
   // Detect greetings
@@ -28,7 +28,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
      userMessageLower.includes("hi") ||
      userMessageLower.includes("hey"))
   ) {
-    return "Hi there! It's good to meet you. This is a safe space where you can share whatever's on your mind. Everything we discuss stays private. What would you like to talk about today?";
+    return "Hi there! It's good to meet you. This is a safe space where you can share whatever's on your mind. What would you like to talk about today?";
   }
   
   // Detect if user is asking how the AI works
@@ -38,7 +38,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("are you real") ||
     userMessageLower.includes("are you a bot")
   ) {
-    return "I'm an AI designed to be a supportive listener. While I can offer a space to reflect on your thoughts and feelings, I'm not a replacement for a human therapist. Our conversation is completely private and not stored. What's been on your mind lately?";
+    return "I'm an AI designed to be a supportive listener. While I can offer a space to reflect on your thoughts and feelings, I'm not a replacement for a human therapist. What's been on your mind lately?";
   }
   
   // Detect gratitude
@@ -47,7 +47,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("thanks") ||
     userMessageLower.includes("helpful")
   ) {
-    return "You're welcome. Taking time to reflect on your feelings shows real self-awareness. Is there something specific that resonated with you, or would you like to explore something else?";
+    return "You're welcome. Taking time to reflect on your feelings shows real self-awareness. Is there something specific that resonated with you?";
   }
   
   // Detect if user is asking about privacy
@@ -57,7 +57,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("store") ||
     userMessageLower.includes("save")
   ) {
-    return "Your privacy is important. Our conversations aren't saved or stored anywhere. When you close or refresh this page, everything disappears completely. This creates a secure space for you to share your thoughts. What's been on your mind?";
+    return "Your privacy is important. Our conversations aren't saved or stored. When you close this page, everything disappears completely. What's been on your mind?";
   }
   
   // Detect if user wants to end conversation
@@ -67,7 +67,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("see you") ||
     userMessageLower.includes("that's all")
   ) {
-    return "Thank you for sharing with me today. Take a moment to acknowledge any insights you've gained. Remember to be gentle with yourself as you move forward. Take care, and I'll be here if you need to talk again.";
+    return "Thank you for sharing with me today. Take a moment to acknowledge any insights you've gained. Remember to be gentle with yourself as you move forward.";
   }
   
   // Enhanced responses for trauma, ADHD, and anxiety
@@ -77,7 +77,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("abuse") ||
     userMessageLower.includes("neglect")
   ) {
-    return "Our minds and bodies find ways to protect us from difficult experiences. These responses make sense, even if they're challenging now. You're not alone in this. Would you like to share more about how these experiences are affecting you?";
+    return "Our minds and bodies find ways to protect us from difficult experiences. These responses make sense, even if they're challenging now. Would you like to share more about how these experiences are affecting you?";
   }
   
   if (
@@ -87,7 +87,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("executive") ||
     userMessageLower.includes("procrastinate")
   ) {
-    return "Focus and attention challenges can be really frustrating. These aren't character flaws but reflect differences in how your brain processes information. What specific difficulties are you experiencing right now?";
+    return "Focus and attention challenges can be really frustrating. These aren't character flaws but reflect differences in how your brain processes information. What specific difficulties are you experiencing?";
   }
   
   if (
@@ -97,7 +97,7 @@ export const generateFallbackResponse = (userMessage: string, conversationHistor
     userMessageLower.includes("panic") ||
     userMessageLower.includes("stress")
   ) {
-    return "Anxiety can feel overwhelming, both in your mind and body. Your nervous system is trying to protect you, but it might be working overtime. Could you tell me more about when you notice these feelings coming up?";
+    return "Anxiety can feel overwhelming, both in your mind and body. Your nervous system is trying to protect you, but it might be working overtime. When do you notice these feelings coming up?";
   }
   
   // General response for most messages
