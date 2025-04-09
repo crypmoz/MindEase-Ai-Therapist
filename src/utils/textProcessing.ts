@@ -13,8 +13,11 @@ export const processResponseText = (text: string | undefined): string => {
   // Remove any random characters at the beginning
   processedText = processedText.replace(/^[^a-zA-Z0-9\[]/, '').trim();
   
-  // Fix multiple consecutive spaces
-  processedText = processedText.replace(/\s{2,}/g, ' ');
+  // Preserve paragraph breaks (double line breaks)
+  processedText = processedText.replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
+  
+  // Fix multiple consecutive spaces within paragraphs
+  processedText = processedText.replace(/(?<!\n)\s{2,}(?!\n)/g, ' ');
   
   // Fix common formatting issues where words are joined
   processedText = processedText.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -84,7 +87,7 @@ export const processResponseText = (text: string | undefined): string => {
   processedText = processedText.replace(/\b(you can|you could) (try to|attempt to)\b/gi, 'you can try to');
   processedText = processedText.replace(/\b(in my opinion|I think|I believe|from my perspective),? (I think|I believe)\b/gi, 'I believe');
   
-  // NEW: Humanize the text by making it less formal and more conversational
+  // Humanize the text by making it less formal and more conversational
   processedText = processedText.replace(/\b(it is)\b/gi, "it's");
   processedText = processedText.replace(/\b(that is)\b/gi, "that's");
   processedText = processedText.replace(/\b(there is)\b/gi, "there's");
@@ -93,19 +96,13 @@ export const processResponseText = (text: string | undefined): string => {
   processedText = processedText.replace(/\b(who is)\b/gi, "who's");
   processedText = processedText.replace(/\b(cannot)\b/gi, "can't");
   
-  // NEW: Add more natural transitions
+  // Add more natural transitions
   processedText = processedText.replace(/\b(furthermore|moreover|in addition)\b/gi, "also");
   processedText = processedText.replace(/\b(consequently|subsequently)\b/gi, "so");
   processedText = processedText.replace(/\b(therefore|thus|hence)\b/gi, "so");
   
-  // NEW: Break up very long sentences for better reading
-  if (processedText.length > 100) {
-    // Find natural breaking points (periods, question marks, exclamation marks)
-    processedText = processedText.replace(/([.!?]) ([A-Z][a-z]+) ([a-z]+ [a-z]+ [a-z]+ [a-z]+) ([,.]) /g, "$1 $2 $3$4\n");
-  }
-  
-  // Fix spacing after periods in abbreviations (e.g., "e.g." should not trigger a double space)
-  processedText = processedText.replace(/(\b\w\.\w\.)\s{2,}/g, '$1 ');
+  // Create paragraph breaks for better readability
+  processedText = processedText.replace(/(.{60,}?)(?:[.!?])\s+(?=[A-Z])/g, "$1.\n\n");
   
   // Fix common grammar errors
   processedText = processedText.replace(/\b(doesnt|dont|isnt|arent|didnt|couldnt|wouldnt|shouldnt)\b/gi, 
@@ -123,29 +120,16 @@ export const processResponseText = (text: string | undefined): string => {
   // Fix spacing around dashes for better readability
   processedText = processedText.replace(/(\w)—(\w)/g, '$1 — $2');
   
-  // Remove any extra sentence fragments at the end
-  processedText = processedText.replace(/\.\s*[a-z][^.]*$/i, '.');
-  
   // Ensure final punctuation 
   if (!/[.!?]$/.test(processedText)) {
     processedText += '.';
   }
   
-  // NEW: Convert some periods to question marks for more engaging conversation
-  if (!processedText.includes("?") && 
-      (processedText.includes("what") || 
-       processedText.includes("how") || 
-       processedText.includes("when") || 
-       processedText.includes("why") || 
-       processedText.includes("where"))) {
-    processedText = processedText.replace(/\.\s*$/, "?");
-  }
+  // Clean up any double newlines at the beginning or end
+  processedText = processedText.replace(/^\n+|\n+$/g, '');
   
-  // Final clean-up: ensure consistent spacing throughout
-  processedText = processedText.replace(/\s{2,}/g, ' ').trim();
-  
-  // Convert line breaks to proper spacing if present
-  processedText = processedText.replace(/\n/g, ' ').trim();
+  // Ensure consistent paragraph spacing
+  processedText = processedText.replace(/\n{3,}/g, '\n\n');
   
   return processedText.trim();
 };

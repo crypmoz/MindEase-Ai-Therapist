@@ -43,18 +43,12 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     // Clean the content of any timer tags
     const cleanContent = content.replace(/\[timer(?::(\d+))?\]/, "").trim();
     
-    // Make sure text has proper spacing
-    const formattedContent = cleanContent
-      .replace(/([.!?])([A-Z])/g, '$1 $2') // Add space after punctuation if missing
-      .replace(/,([A-Za-z])/g, ', $1')     // Add space after commas if missing
-      .replace(/\s{2,}/g, ' ');            // Remove multiple spaces
-    
     let currentIndex = 0;
-    const totalLength = formattedContent.length;
+    const totalLength = cleanContent.length;
     
     const typingTimer = setInterval(() => {
       if (currentIndex < totalLength) {
-        setDisplayedText(prevText => prevText + formattedContent[currentIndex]);
+        setDisplayedText(prevText => prevText + cleanContent[currentIndex]);
         setProgressValue(currentIndex / totalLength * 100);
         currentIndex++;
       } else {
@@ -90,6 +84,21 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  // Format displayed text to render paragraphs properly
+  const formatDisplayText = (text: string) => {
+    // Split by double line breaks to identify paragraphs
+    return text.split('\n\n').map((paragraph, i) => (
+      <p key={i} className="mb-3 last:mb-0">
+        {paragraph.split('\n').map((line, j) => (
+          <React.Fragment key={j}>
+            {line}
+            {j < paragraph.split('\n').length - 1 && <br />}
+          </React.Fragment>
+        ))}
+      </p>
+    ));
+  };
+
   // Show typing indicator when no content is available
   if (!content) {
     return <div className="max-w-[80%] mb-3 mr-auto">
@@ -104,7 +113,9 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
   }
   
   const messageContent = <>
-      <p className="text-sm whitespace-pre-wrap py-0 sm:text-base font-normal text-left px-[2px] mx-[3px] my-[13px]">{displayedText}</p>
+      <div className="text-sm whitespace-pre-line py-0 sm:text-base font-normal text-left px-[2px] mx-[3px] my-[13px] prose prose-sm dark:prose-invert">
+        {formatDisplayText(displayedText)}
+      </div>
       
       {/* Timer visualization - only shown when timer tag is present */}
       {showTimer && <div className="mt-3 space-y-2">

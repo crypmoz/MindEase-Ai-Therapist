@@ -13,6 +13,21 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   isUser,
   animate = true 
 }) => {
+  // Format displayed text to render paragraphs properly (for non-user messages)
+  const formatDisplayText = (text: string) => {
+    // Split by double line breaks to identify paragraphs
+    return text.split('\n\n').map((paragraph, i) => (
+      <p key={i} className="mb-2 last:mb-0">
+        {paragraph.split('\n').map((line, j) => (
+          <React.Fragment key={j}>
+            {line}
+            {j < paragraph.split('\n').length - 1 && <br />}
+          </React.Fragment>
+        ))}
+      </p>
+    ));
+  };
+
   return (
     <div 
       className={cn(
@@ -29,7 +44,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             : "bg-secondary text-secondary-foreground rounded-bl-sm"
         )}
       >
-        <p className="text-sm sm:text-base whitespace-pre-wrap">{content}</p>
+        <div className={cn(
+          "text-sm sm:text-base",
+          isUser ? "whitespace-pre-wrap" : "whitespace-pre-line prose prose-sm dark:prose-invert"
+        )}>
+          {isUser ? content : formatDisplayText(content)}
+        </div>
       </div>
     </div>
   );
