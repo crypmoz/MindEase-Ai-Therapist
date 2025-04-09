@@ -1,4 +1,3 @@
-
 import type { Message } from "@/hooks/useChatState";
 
 // Deepseek API integration for more sophisticated responses
@@ -57,7 +56,7 @@ export const generateTherapistResponse = async (
     // Process the response text to fix formatting issues
     let responseText = data.choices[0].message.content;
     
-    // Clean up the response text to remove any unintended formatting issues
+    // Enhanced comprehensive text processing
     if (responseText) {
       // Trim whitespace
       responseText = responseText.trim();
@@ -74,7 +73,27 @@ export const generateTherapistResponse = async (
       // Fix missing spaces after punctuation
       responseText = responseText.replace(/([.!?])([a-zA-Z])/g, '$1 $2');
       
-      // Fix spelling mistakes for common therapy terms
+      // Add space after commas if missing
+      responseText = responseText.replace(/,([a-zA-Z])/g, ', $1');
+      
+      // Fix incorrect capitalization
+      responseText = responseText.replace(/\b(i)\b/g, 'I');
+      
+      // Fix spaced hyphens in compound words
+      responseText = responseText.replace(/(\w+)\s-\s(\w+)/g, '$1-$2');
+      
+      // Ensure proper spacing around parentheses
+      responseText = responseText.replace(/\s*\(\s*/g, ' (');
+      responseText = responseText.replace(/\s*\)\s*/g, ') ');
+      
+      // Fix non-standard quotes
+      responseText = responseText.replace(/['']/g, "'");
+      responseText = responseText.replace(/[""]/g, '"');
+      
+      // Replace double periods
+      responseText = responseText.replace(/\.{2,}/g, '.');
+      
+      // Expand comprehensive spelling corrections
       const commonSpellingCorrections = {
         'anxiet': 'anxiety',
         'depresion': 'depression',
@@ -92,14 +111,49 @@ export const generateTherapistResponse = async (
         'executive function': 'executive functioning',
         'coping strateg': 'coping strategy',
         'rumination': 'rumination',
-        'catastrophiz': 'catastrophiz',
+        'catastrophiz': 'catastrophizing',
         'hypervigilance': 'hypervigilance',
         'selfcare': 'self-care',
         'selfesteem': 'self-esteem',
         'selfworth': 'self-worth',
         'selfcriticism': 'self-criticism',
         'selfregulation': 'self-regulation',
-        'selfcompassion': 'self-compassion'
+        'selfcompassion': 'self-compassion',
+        'cognitive behavioral': 'Cognitive Behavioral',
+        'cbt': 'CBT',
+        'dbt': 'DBT',
+        'dialectical behavior': 'Dialectical Behavior',
+        'autum': 'autumn',
+        'gratefull': 'grateful',
+        'gratful': 'grateful',
+        'helpfull': 'helpful',
+        'truely': 'truly',
+        'beleive': 'believe',
+        'believ': 'believe',
+        'recieve': 'receive',
+        'percieve': 'perceive',
+        'acheive': 'achieve',
+        'experiance': 'experience',
+        'stressors': 'stressors',
+        'sympthom': 'symptom',
+        'alot': 'a lot',
+        'aswell': 'as well',
+        'asthough': 'as though',
+        'eachother': 'each other',
+        'cant': "can't",
+        'dont': "don't",
+        'didnt': "didn't",
+        'wouldnt': "wouldn't",
+        'shouldnt': "shouldn't",
+        'couldnt': "couldn't",
+        'isnt': "isn't",
+        'arent': "aren't",
+        'doesnt': "doesn't",
+        'neccessary': 'necessary',
+        'neccesary': 'necessary',
+        'relevent': 'relevant',
+        'relivent': 'relevant',
+        'tommorrow': 'tomorrow'
       };
       
       // Apply spelling corrections
@@ -108,11 +162,20 @@ export const generateTherapistResponse = async (
         responseText = responseText.replace(regex, correct);
       });
       
-      // Fix duplicate letters (like "Helllo")
-      responseText = responseText.replace(/([a-z])\1{2,}/gi, '$1$1');
+      // Fix duplicate letters (like "Helllo") more aggressively
+      responseText = responseText.replace(/([a-z])\1{3,}/gi, '$1$1');
+      
+      // Fix sentence capitalization
+      responseText = responseText.replace(/(?:^|[.!?]\s+)([a-z])/g, match => match.toUpperCase());
+      
+      // Ensure clinical terms are properly capitalized
+      responseText = responseText.replace(/\b(adhd|ptsd|cbt|dbt)\b/gi, match => match.toUpperCase());
       
       // Remove any extra sentence fragments
       responseText = responseText.replace(/\.\s*[a-z][^.]*$/i, '.');
+      
+      // Final trim to remove any leading/trailing whitespace
+      responseText = responseText.trim();
     }
     
     return responseText || "I'm here to listen. What's on your mind?";

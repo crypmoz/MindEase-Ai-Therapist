@@ -37,18 +37,32 @@ export const useChatState = () => {
           const cleanResponse = response ? response.trim() : 
             "I'm here to listen. What would you like to talk about?";
           
-          // Additional checks for common formatting issues
+          // Enhanced formatting check with more comprehensive text processing
           const finalResponse = cleanResponse
-            // Remove any random characters at the beginning that might have slipped through
-            .replace(/^[^a-zA-Z0-9\[]/, '')
+            // Remove any random characters or markdown artifacts at the beginning
+            .replace(/^[^a-zA-Z0-9\[]/g, '')
             // Ensure proper spacing after punctuation
             .replace(/([.!?])([a-zA-Z])/g, '$1 $2')
             // Fix multiple consecutive spaces
             .replace(/\s{2,}/g, ' ')
-            // Fix duplicate letters (like "Helllo")
+            // Fix duplicate letters (like "Helllo") more aggressively
             .replace(/([a-z])\1{2,}/gi, '$1$1')
+            // Fix incorrect capitalization
+            .replace(/\b(i)\b/g, 'I')
             // Proper capitalization for clinical terms
-            .replace(/\b(adhd|ptsd)\b/gi, match => match.toUpperCase())
+            .replace(/\b(adhd|ptsd|cbt|dbt)\b/gi, match => match.toUpperCase())
+            // Fix spaced hyphens in compound words
+            .replace(/(\w+)\s-\s(\w+)/g, '$1-$2')
+            // Ensure proper spacing around parentheses
+            .replace(/\s*\(\s*/g, ' (')
+            .replace(/\s*\)\s*/g, ') ')
+            // Fix non-standard quotes
+            .replace(/['']/g, "'")
+            .replace(/[""]/g, '"')
+            // Replace double periods
+            .replace(/\.{2,}/g, '.')
+            // Add space after commas if missing
+            .replace(/,([a-zA-Z])/g, ', $1')
             .trim();
           
           setMessages(prev => [...prev, { text: finalResponse, isUser: false }]);
