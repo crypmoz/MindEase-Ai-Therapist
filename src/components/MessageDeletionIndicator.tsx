@@ -7,11 +7,16 @@ const MessageDeletionIndicator: React.FC = () => {
   
   // Show the indicator when the user is about to navigate away or refresh
   useEffect(() => {
-    const handleBeforeUnload = () => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       setShowIndicator(true);
       // This is just for visual feedback before the page unloads
       // In a real scenario, the page would unload before this timeout completes
       setTimeout(() => setShowIndicator(false), 2000);
+      
+      // Standard behavior for beforeunload events
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
     };
     
     window.addEventListener('beforeunload', handleBeforeUnload);

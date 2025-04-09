@@ -25,10 +25,23 @@ export const useChatState = () => {
     
     // Generate therapist response with a slight delay to feel natural
     setTimeout(() => {
-      generateTherapistResponse(text, messages).then(response => {
-        setMessages(prev => [...prev, { text: response, isUser: false }]);
-        setIsTherapistTyping(false);
-      });
+      generateTherapistResponse(text, messages)
+        .then(response => {
+          // Make sure response is not undefined and properly spaced
+          const cleanResponse = response ? response.trim() : 
+            "I'm here to listen. What would you like to talk about?";
+          
+          setMessages(prev => [...prev, { text: cleanResponse, isUser: false }]);
+          setIsTherapistTyping(false);
+        })
+        .catch(error => {
+          console.error("Error in AI response:", error);
+          setMessages(prev => [...prev, { 
+            text: "I'm having trouble understanding right now. Could you try expressing that another way?", 
+            isUser: false 
+          }]);
+          setIsTherapistTyping(false);
+        });
     }, 500 + Math.random() * 1000); // Random delay between 500-1500ms
   }, [messages]);
 

@@ -14,7 +14,7 @@ export const generateTherapistResponse = async (
     const formattedMessages = [
       {
         role: "system",
-        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere."
+        content: "You are a compassionate AI therapist named MindEase. Your purpose is to create a safe space where users can express their thoughts and feelings. Respond with empathy, ask thoughtful questions to help users explore their feelings deeper, and offer gentle guidance when appropriate. Keep responses concise (under 150 words). Never advise on medication or make diagnoses. If users express thoughts of self-harm, encourage them to contact professional help immediately. Remember that privacy is paramount - remind users that this conversation is completely private and not stored anywhere. Always ensure proper spacing between words and sentences."
       },
       ...recentMessages.map(msg => ({
         role: msg.isUser ? "user" : "assistant",
@@ -54,7 +54,9 @@ export const generateTherapistResponse = async (
     }
 
     const data = await response.json();
-    return data.choices[0].message.content.trim();
+    // Ensure the response doesn't have undefined at the end
+    const responseText = data.choices[0].message.content.trim();
+    return responseText || "I'm here to listen. What's on your mind?";
   } catch (error) {
     console.error("Error generating AI response:", error);
     return generateFallbackResponse(userMessage, conversationHistory);
