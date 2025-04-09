@@ -30,7 +30,7 @@ const Index: React.FC = () => {
       <Header />
       
       <main className="flex-1 flex items-center justify-center p-4 overflow-hidden">
-        <div className="w-full max-w-2xl h-[calc(100vh-theme(space.20))] flex flex-col bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-2xl rounded-xl overflow-hidden border border-white/30 dark:border-gray-800/30 transition-all duration-300">
+        <div className="w-full max-w-xl h-[calc(100vh-theme(space.20))] flex flex-col bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg rounded-lg overflow-hidden border border-white/30 dark:border-gray-800/30">
           {!showChat ? (
             <ScrollArea className="flex-1">
               <div className="flex-1 flex flex-col items-center justify-center p-4">
