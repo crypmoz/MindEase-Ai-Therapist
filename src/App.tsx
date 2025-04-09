@@ -9,6 +9,13 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import MessageDeletionIndicator from "./components/MessageDeletionIndicator";
+import Journal from "./pages/Journal";
+import MentalHealthResources from "./pages/MentalHealthResources";
+import BreathingExercises from "./pages/BreathingExercises";
+import MoodTracker from "./pages/MoodTracker";
+import GuidedMeditation from "./pages/GuidedMeditation";
+import FAQPage from "./pages/FAQPage";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -16,19 +23,27 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <MessageDeletionIndicator />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <MessageDeletionIndicator />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/journal" element={<Journal />} />
+              <Route path="/resources" element={<MentalHealthResources />} />
+              <Route path="/breathing" element={<BreathingExercises />} />
+              <Route path="/mood" element={<MoodTracker />} />
+              <Route path="/meditation" element={<GuidedMeditation />} />
+              <Route path="/faq" element={<FAQPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };
