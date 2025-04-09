@@ -1,6 +1,6 @@
 
 import { useState, useCallback, useEffect } from "react";
-import { generateTherapistResponse } from "@/utils/therapistAI";
+import { generateTherapistResponse, processResponseText } from "@/utils/therapistAI";
 
 export interface Message {
   text: string;
@@ -50,12 +50,8 @@ export const useChatState = () => {
       generateTherapistResponse(cleanText, messages)
         .then(response => {
           // Make sure response is not undefined and properly formatted
-          const cleanResponse = response ? response.trim() : 
+          const cleanResponse = response ? processResponseText(response.trim()) : 
             "I'm here to listen. What would you like to talk about?";
-          
-          // Enhanced formatting check with more comprehensive text processing
-          // All formatting is now centralized in the therapistAI.ts file
-          // to ensure consistency across all responses
           
           setMessages(prev => [...prev, { text: cleanResponse, isUser: false }]);
           setIsTherapistTyping(false);

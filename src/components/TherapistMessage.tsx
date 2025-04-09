@@ -1,11 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 import MessageBubble from "./MessageBubble";
 import { Clock } from "lucide-react";
 import { Progress } from "./ui/progress";
+
 interface TherapistMessageProps {
   content: string;
   typingDelay?: number;
 }
+
 const TherapistMessage: React.FC<TherapistMessageProps> = ({
   content,
   typingDelay = 30
@@ -16,6 +19,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
   const [showTimer, setShowTimer] = useState(false);
   const [timerDuration, setTimerDuration] = useState(60); // Default 60 seconds
   const [timeRemaining, setTimeRemaining] = useState(60);
+
   useEffect(() => {
     if (!content) return;
     setIsTyping(true);
@@ -38,11 +42,19 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
 
     // Clean the content of any timer tags
     const cleanContent = content.replace(/\[timer(?::(\d+))?\]/, "").trim();
+    
+    // Make sure text has proper spacing
+    const formattedContent = cleanContent
+      .replace(/([.!?])([A-Z])/g, '$1 $2') // Add space after punctuation if missing
+      .replace(/,([A-Za-z])/g, ', $1')     // Add space after commas if missing
+      .replace(/\s{2,}/g, ' ');            // Remove multiple spaces
+    
     let currentIndex = 0;
-    const totalLength = cleanContent.length;
+    const totalLength = formattedContent.length;
+    
     const typingTimer = setInterval(() => {
       if (currentIndex < totalLength) {
-        setDisplayedText(prevText => prevText + cleanContent[currentIndex]);
+        setDisplayedText(prevText => prevText + formattedContent[currentIndex]);
         setProgressValue(currentIndex / totalLength * 100);
         currentIndex++;
       } else {
@@ -51,6 +63,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
         setProgressValue(100);
       }
     }, typingDelay);
+    
     return () => clearInterval(typingTimer);
   }, [content, typingDelay]);
 
@@ -89,6 +102,7 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
         </div>
       </div>;
   }
+  
   const messageContent = <>
       <p className="text-sm whitespace-pre-wrap py-0 sm:text-base font-normal text-left px-[2px] mx-[3px] my-[13px]">{displayedText}</p>
       
@@ -108,10 +122,12 @@ const TherapistMessage: React.FC<TherapistMessageProps> = ({
           <Progress value={(timerDuration - timeRemaining) / timerDuration * 100} className="h-1.5" />
         </div>}
     </>;
+    
   return <div className="max-w-[80%] mb-3 mr-auto message-transition">
       <div className="px-4 py-3 rounded-xl shadow-sm bg-secondary text-secondary-foreground rounded-bl-sm">
         {messageContent}
       </div>
     </div>;
 };
+
 export default TherapistMessage;

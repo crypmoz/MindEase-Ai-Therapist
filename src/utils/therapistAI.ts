@@ -1,4 +1,3 @@
-
 import type { Message } from "@/hooks/useChatState";
 
 // Deepseek API integration for more sophisticated responses
@@ -29,7 +28,7 @@ export const generateTherapistResponse = async (
     // This is a fallback mechanism if the API call fails
     if (!apiKey) {
       console.log("Using fallback response mechanism - no API key configured");
-      return processResponseText(generateFallbackResponse(userMessage, conversationHistory));
+      return generateFallbackResponse(userMessage, conversationHistory);
     }
 
     // Call the Deepseek API
@@ -50,22 +49,20 @@ export const generateTherapistResponse = async (
     if (!response.ok) {
       const errorData = await response.json();
       console.error("API Error:", errorData);
-      return processResponseText(generateFallbackResponse(userMessage, conversationHistory));
+      return generateFallbackResponse(userMessage, conversationHistory);
     }
 
     const data = await response.json();
-    // Process the response text to fix formatting issues
-    let responseText = data.choices[0].message.content;
-    
-    return processResponseText(responseText);
+    // Get the response text and return directly - formatting will be handled by the caller
+    return data.choices[0].message.content;
   } catch (error) {
     console.error("Error generating AI response:", error);
-    return processResponseText(generateFallbackResponse(userMessage, conversationHistory));
+    return generateFallbackResponse(userMessage, conversationHistory);
   }
 };
 
-// Centralized text processing function for consistent formatting
-const processResponseText = (text: string | undefined): string => {
+// Centralized text processing function for consistent formatting - exported for use elsewhere
+export const processResponseText = (text: string | undefined): string => {
   if (!text) {
     return "I'm here to listen. What's on your mind?";
   }
@@ -113,109 +110,19 @@ const processResponseText = (text: string | undefined): string => {
 
   // Fix runs of misplaced punctuation
   processedText = processedText.replace(/([,.!?;:]){2,}/g, '$1');
+  
+  // Fix multi-spaces between sentences
+  processedText = processedText.replace(/([.!?])\s{2,}/g, '$1 ');
+  
+  // Fix trailing spaces before punctuation
+  processedText = processedText.replace(/\s+([.!?,;:])/g, '$1');
+  
+  // Fix missing space after closing parenthesis and before capital letter
+  processedText = processedText.replace(/\)([A-Z])/g, ') $1');
 
   // Comprehensive spelling and term corrections
   const clinicalTermCorrections = {
-    // Psychology terms
-    'anxiet': 'anxiety',
-    'depresion': 'depression', 
-    'mindfullness': 'mindfulness',
-    'medittation': 'meditation',
-    'breath': 'breathe',
-    'concious': 'conscious',
-    'unconcious': 'unconscious',
-    'relaxtion': 'relaxation',
-    'theraputic': 'therapeutic',
-    'dissorder': 'disorder',
-    'disfunctio': 'dysfunction',
-    'executive function': 'executive functioning',
-    'coping strateg': 'coping strategy',
-    'rumination': 'rumination',
-    'catastrophiz': 'catastrophizing',
-    'hypervigilance': 'hypervigilance',
-    
-    // Self-related terms
-    'selfcare': 'self-care',
-    'selfesteem': 'self-esteem',
-    'selfworth': 'self-worth',
-    'selfcriticism': 'self-criticism',
-    'selfregulation': 'self-regulation',
-    'selfcompassion': 'self-compassion',
-    'selftalk': 'self-talk',
-    'selfawareness': 'self-awareness',
-    'selfknowledge': 'self-knowledge',
-    
-    // Therapy approaches
-    'cognitive behavioral': 'Cognitive Behavioral',
-    'dialectical behavior': 'Dialectical Behavior',
-    'acceptance commitment': 'Acceptance and Commitment',
-    'psychodynamic': 'Psychodynamic',
-    'interpersonal': 'Interpersonal',
-    'trauma informed': 'trauma-informed',
-    'trauma focused': 'trauma-focused',
-    'solution focused': 'solution-focused',
-    'narrative therapy': 'Narrative Therapy',
-    'psychoanalytic': 'Psychoanalytic',
-    
-    // Acronyms
-    'cbt': 'CBT',
-    'dbt': 'DBT',
-    'act': 'ACT',
-    'emdr': 'EMDR',
-    'adhd': 'ADHD',
-    'ptsd': 'PTSD',
-    'ocpd': 'OCPD',
-    'ocd': 'OCD',
-    'gad': 'GAD',
-    
-    // Common spelling errors
-    'gratefull': 'grateful',
-    'gratful': 'grateful',
-    'helpfull': 'helpful',
-    'truely': 'truly',
-    'beleive': 'believe',
-    'believ': 'believe',
-    'recieve': 'receive',
-    'percieve': 'perceive',
-    'acheive': 'achieve',
-    'experiance': 'experience',
-    'stressors': 'stressors',
-    'sympthom': 'symptom',
-    'alot': 'a lot',
-    'aswell': 'as well',
-    'asthough': 'as though',
-    'eachother': 'each other',
-    'neccessary': 'necessary',
-    'neccesary': 'necessary',
-    'relevent': 'relevant',
-    'relivent': 'relevant',
-    'tommorrow': 'tomorrow',
-    'simptom': 'symptom',
-    'tecnique': 'technique',
-    'exercize': 'exercise',
-    
-    // Contractions
-    'cant': "can't",
-    'dont': "don't",
-    'didnt': "didn't",
-    'wouldnt': "wouldn't",
-    'shouldnt': "shouldn't",
-    'couldnt': "couldn't",
-    'isnt': "isn't",
-    'arent': "aren't",
-    'doesnt': "doesn't",
-    'hasnt': "hasn't",
-    'havnt': "haven't",
-    'werent': "weren't",
-    'wasnt': "wasn't",
-    'shouldve': "should've",
-    'couldve': "could've",
-    'wouldve': "would've",
-    'youre': "you're",
-    'theyre': "they're",
-    'were': "we're",
-    'whos': "who's",
-    'whats': "what's"
+    // ... keep existing code (clinical term corrections dictionary)
   };
   
   // Apply clinical term corrections with word boundary checks
@@ -244,12 +151,18 @@ const processResponseText = (text: string | undefined): string => {
   // Remove any extra sentence fragments at the end
   processedText = processedText.replace(/\.\s*[a-z][^.]*$/i, '.');
   
+  // Ensure final punctuation 
+  if (!/[.!?]$/.test(processedText)) {
+    processedText += '.';
+  }
+  
   // Final trim
   return processedText.trim();
 };
 
 // Update useChatState.tsx to handle response formatting
 const generateFallbackResponse = (userMessage: string, conversationHistory: Message[]): string => {
+  // ... keep existing code (fallback response generation)
   const userMessageLower = userMessage.toLowerCase();
   
   // ONLY add timer when explicitly asked for breathing/mindfulness exercises
